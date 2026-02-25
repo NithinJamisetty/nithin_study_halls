@@ -1,0 +1,75 @@
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 40px;
+}
+
+.logo { font-weight: 700; }
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+}
+
+.admin-btn {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #2196F3;
+  color: white;
+  cursor: pointer;
+}
+
+.hero {
+  height: 60vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+  url("https://i.pinimg.com/1200x/43/6f/9a/436f9af696cf173273be125ad0adcf73.jpg");
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section {
+  padding: 80px 60px;
+  text-align: center;
+}
+
+.glass {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.two-column {
+  display: flex;
+  gap: 40px;
+  padding: 60px;
+}
+
+.box { width: 48%; }
+
+@media (max-width: 900px) {
+  .two-column { flex-direction: column; }
+  .box { width: 100%; }
+}

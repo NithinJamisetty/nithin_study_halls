@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Radha Study Halls - Admin</title>
+  <link rel="stylesheet" href="admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="admin-bg"></div>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login-container glass-panel">
+  <div class="glass-card">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="adminPanel" class="glass-panel" style="display:none;">
+
+  <header class="admin-header">
+    <h1>RADHA STUDY HALLS</h1>
+    <div class="admin-clock">
+      <span>Live Time: </span>
+      <span id="adminClock"></span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+
+  <!-- TABS -->
+  <div class="admin-tabs">
+    <button class="tab-btn active" onclick="showSection('seats')">Seat Management</button>
+    <button class="tab-btn" onclick="showSection('enquiries')">Enquiries <span class="enquiry-badge">●</span></button>
+  </div>
+
+  <!-- SEAT SECTION -->
+  <div id="seatSection">
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3>AC Section</h3>
+        <p>Booked: <span id="acBooked">0</span> / 30</p>
+        <p>Available: <span id="acAvailable">30</span></p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Non AC Section</h3>
+        <p>Booked: <span id="nonBooked">0</span> / 25</p>
+        <p>Available: <span id="nonAvailable">25</span></p>
+      </div>
+    </div>
+
+    <div class="section-wrapper">
+      <h2>AC Section</h2>
+      <div id="acSeats" class="seat-grid"></div>
+    </div>
+
+    <div class="section-wrapper">
+      <h2>Non AC Section</h2>
+      <div id="nonSeats" class="seat-grid"></div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">Reset All Seats</button>
+
+  </div>
+
+  <!-- ENQUIRY SECTION -->
+  <div id="enquirySection" style="display:none;">
+    <div class="section-wrapper">
+      <h2>Enquiry Records</h2>
+      <table class="enquiry-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="enquiryTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Gender Modal -->
+<div id="genderModal" class="modal">
+  <div class="modal-content">
+    <h3>Select Gender</h3>
+    <button onclick="selectGender('male')">Male</button>
+    <button onclick="selectGender('female')">Female</button>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+<script>
+  function updateClock(){
+    const now = new Date();
+    const time = now.toLocaleTimeString();
+    document.getElementById("adminClock").innerText = time;
+  }
+  setInterval(updateClock,1000);
+  updateClock();
+  </script>
+</body>
+</html>
