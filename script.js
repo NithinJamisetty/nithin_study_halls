@@ -7,7 +7,8 @@ import {
   setDoc,
   getDoc,
   getDocs,
-  collection
+  collection,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -442,8 +443,8 @@ async function loadUsers() {
         : `<span class="status pending" style="background: #e3f2fd; color: #1976d2;">Active</span>`;
 
       const actionButton = item.status !== "Completed"
-        ? `<button onclick="markUserCompleted('${userId}')" class="mark-btn" style="background: #2f5d50;">Mark Completed</button>`
-        : `<button onclick="markUserActive('${userId}')" class="mark-btn" style="background: #ffaa00;">Mark Active</button>`;
+        ? `<button onclick="markUserCompleted('${userId}')" class="mark-btn" style="background: #2f5d50;">Mark Completed</button> <button onclick="deleteUser('${userId}')" class="mark-btn" style="background: #e74c3c;">Delete</button>`
+        : `<button onclick="markUserActive('${userId}')" class="mark-btn" style="background: #ffaa00;">Mark Active</button> <button onclick="deleteUser('${userId}')" class="mark-btn" style="background: #e74c3c;">Delete</button>`;
 
       const row = `
         <tr>
@@ -453,7 +454,7 @@ async function loadUsers() {
           <td style="text-transform: capitalize;">${item.gender || 'N/A'}</td>
           <td>${(item.seatId || '').replace('_', ' ')}</td>
           <td>${statusBadge}</td>
-          <td>${actionButton}</td>
+          <td style="display: flex; gap: 5px;">${actionButton}</td>
         </tr>
       `;
       table.innerHTML += row;
@@ -546,6 +547,46 @@ window.markUserActive = async function (id) {
     await setDoc(doc(db, "users", id), { status: "Active" }, { merge: true });
     loadUsers();
   } catch (e) { console.error("Error marking active:", e); }
+};
+
+window.deleteUser = async function (id) {
+  if (confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
+    try {
+      // 1. First get the user to find out which seat they occupy
+      const userSnap = await getDoc(doc(db, "users", id));
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const seatId = userData.seatId;
+
+        if (seatId) {
+          // 2. Clear them from that seat's active booking array so the slot opens up immediately
+          const seatRef = doc(db, "seats", seatId);
+          const seatSnap = await getDoc(seatRef);
+          if (seatSnap.exists()) {
+            const seatData = seatSnap.data();
+            let bookings = [];
+            if (seatData.phone && !seatData.bookings) bookings.push(seatData);
+            else if (seatData.bookings) bookings = seatData.bookings;
+
+            bookings = bookings.filter(b => b.phone !== id);
+            await setDoc(seatRef, { bookings: bookings });
+
+            // Refresh the map secretly in the background
+            loadSeats();
+          }
+        }
+      }
+
+      // 3. Delete from the permanent roster
+      await deleteDoc(doc(db, "users", id));
+
+      // Refresh table
+      loadUsers();
+    } catch (e) {
+      console.error("Error deleting user:", e);
+      alert("There was an error deleting this user.");
+    }
+  }
 };
 
 async function loadEnquiries() {
