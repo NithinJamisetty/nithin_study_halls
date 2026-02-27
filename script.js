@@ -549,43 +549,58 @@ window.markUserActive = async function (id) {
   } catch (e) { console.error("Error marking active:", e); }
 };
 
-window.deleteUser = async function (id) {
-  if (confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
-    try {
-      // 1. First get the user to find out which seat they occupy
-      const userSnap = await getDoc(doc(db, "users", id));
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const seatId = userData.seatId;
+let userIdToDelete = null;
 
-        if (seatId) {
-          // 2. Clear them from that seat's active booking array so the slot opens up immediately
-          const seatRef = doc(db, "seats", seatId);
-          const seatSnap = await getDoc(seatRef);
-          if (seatSnap.exists()) {
-            const seatData = seatSnap.data();
-            let bookings = [];
-            if (seatData.phone && !seatData.bookings) bookings.push(seatData);
-            else if (seatData.bookings) bookings = seatData.bookings;
+window.deleteUser = function (id) {
+  userIdToDelete = id;
+  document.getElementById("deleteConfirmModal").style.display = "flex";
+};
 
-            bookings = bookings.filter(b => b.phone !== id);
-            await setDoc(seatRef, { bookings: bookings });
+window.closeDeleteConfirmModal = function () {
+  userIdToDelete = null;
+  document.getElementById("deleteConfirmModal").style.display = "none";
+};
 
-            // Refresh the map secretly in the background
-            loadSeats();
-          }
+window.confirmDeleteUser = async function () {
+  if (!userIdToDelete) return;
+  const id = userIdToDelete;
+
+  try {
+    // 1. First get the user to find out which seat they occupy
+    const userSnap = await getDoc(doc(db, "users", id));
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const seatId = userData.seatId;
+
+      if (seatId) {
+        // 2. Clear them from that seat's active booking array so the slot opens up immediately
+        const seatRef = doc(db, "seats", seatId);
+        const seatSnap = await getDoc(seatRef);
+        if (seatSnap.exists()) {
+          const seatData = seatSnap.data();
+          let bookings = [];
+          if (seatData.phone && !seatData.bookings) bookings.push(seatData);
+          else if (seatData.bookings) bookings = seatData.bookings;
+
+          bookings = bookings.filter(b => b.phone !== id);
+          await setDoc(seatRef, { bookings: bookings });
+
+          // Refresh the map secretly in the background
+          loadSeats();
         }
       }
-
-      // 3. Delete from the permanent roster
-      await deleteDoc(doc(db, "users", id));
-
-      // Refresh table
-      loadUsers();
-    } catch (e) {
-      console.error("Error deleting user:", e);
-      alert("There was an error deleting this user.");
     }
+
+    // 3. Delete from the permanent roster
+    await deleteDoc(doc(db, "users", id));
+
+    // Close modal and refresh table
+    closeDeleteConfirmModal();
+    loadUsers();
+  } catch (e) {
+    console.error("Error deleting user:", e);
+    alert("There was an error deleting this user.");
+    closeDeleteConfirmModal();
   }
 };
 

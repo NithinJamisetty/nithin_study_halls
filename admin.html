@@ -282,6 +282,21 @@
     </div>
   </div>
 
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="modal">
+    <div class="modal-content" style="text-align: center; max-width: 350px;">
+      <div style="font-size: 50px; color: #e74c3c; margin-bottom: 15px;">⚠️</div>
+      <h3 style="color: var(--text-main); margin-bottom: 10px;">Delete User?</h3>
+      <p style="color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Are you sure you want to permanently
+        delete this user? This action cannot be undone.</p>
+
+      <div style="display: flex; gap: 10px;">
+        <button onclick="closeDeleteConfirmModal()" style="background: var(--text-muted); width: 50%;">Cancel</button>
+        <button onclick="confirmDeleteUser()" style="background: #e74c3c; width: 50%;">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Seat Click Custom Modal -->
   <div id="seatModal" class="error-modal" style="display:none; z-index: 2000;">
     <div class="error-content" style="text-align: center; max-width: 400px; padding: 40px; border-radius: 30px;">
