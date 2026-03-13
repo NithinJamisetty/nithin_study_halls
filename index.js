@@ -172,4 +172,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
   counters.forEach(el => counterObserver.observe(el));
 
+  /* ===============================
+     Star Rating for Review Form
+  =================================*/
+  const stars = document.querySelectorAll('#starRating span');
+  const ratingInput = document.getElementById('reviewRating');
+
+  if (stars.length) {
+    stars.forEach(star => {
+      star.addEventListener('mouseenter', () => {
+        const val = parseInt(star.getAttribute('data-val'));
+        stars.forEach(s => {
+          s.classList.toggle('hovered', parseInt(s.getAttribute('data-val')) <= val);
+        });
+      });
+
+      star.addEventListener('mouseleave', () => {
+        stars.forEach(s => s.classList.remove('hovered'));
+      });
+
+      star.addEventListener('click', () => {
+        const val = parseInt(star.getAttribute('data-val'));
+        ratingInput.value = val;
+        stars.forEach(s => {
+          s.classList.toggle('active', parseInt(s.getAttribute('data-val')) <= val);
+        });
+      });
+    });
+  }
+
+  /* ===============================
+     Review Form Submission
+  =================================*/
+  const reviewForm = document.getElementById('reviewForm');
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('reviewMsg');
+      const name = document.getElementById('reviewName').value.trim();
+      const role = document.getElementById('reviewRole').value.trim();
+      const text = document.getElementById('reviewText').value.trim();
+      const rating = parseInt(document.getElementById('reviewRating').value, 10);
+
+      if (rating === 0) {
+        msg.style.color = '#EF4444';
+        msg.textContent = 'Please select a star rating first.';
+        return;
+      }
+
+      msg.style.color = 'var(--text-muted)';
+      msg.textContent = 'Submitting…';
+
+      try {
+        // Attempt to save to backend; falls back gracefully if offline
+        await fetch('https://rsh-backend-production.up.railway.app/review', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role, text, rating })
+        });
+      } catch (_) { /* no-op if backend absent */ }
+
+      msg.style.color = '#10B981';
+      msg.textContent = '✅ Thanks ' + name + '! Your review means the world to us.';
+      reviewForm.reset();
+      stars.forEach(s => s.classList.remove('active', 'hovered'));
+      ratingInput.value = 0;
+    });
+  }
+
 });

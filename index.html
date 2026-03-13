@@ -136,25 +136,20 @@
     </div>
   </section>
 
-  <section id="about" class="section reveal">
-    <h2 class="section-title">Designed for calm, not chaos.</h2>
-    <p class="section-subtitle">A study space built for serious aspirants. We stopped fighting the natural need for
-      comfort and created a gentle, aesthetic environment where you can actually focus.</p>
-
-    <div class="glass-container">
-      <div class="about-grid">
-        <div class="founder-imgs">
-          <img src="founder1.png" class="founder-img" alt="Founder"
-            onerror="this.src='https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=400';">
-        </div>
-        <div class="about-text">
-          <p><strong>Traditional study halls don't work for many.</strong> They are cramped, noisy, and visually
-            exhausting.</p>
-          <p><strong>Nithin Study Halls is designed differently.</strong> We removed the clutter that makes studying
-            feel
-            heavy. It helps you focus on today without feeling like you're falling behind.</p>
-          <p>Your space. Your peace. Your success.</p>
-        </div>
+  <section id="about" class="section reveal" style="padding-top:0; padding-bottom:40px;">
+    <div class="about-compact">
+      <img src="founder1.png" class="about-compact-img" alt="Founder"
+        onerror="this.src='https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=300';">
+      <div class="about-compact-text">
+        <div class="section-badge" style="margin-bottom:10px;">👋 Our Story</div>
+        <h2 class="section-title" style="font-size:32px; text-align:left; margin-bottom:12px;">Designed for calm, not
+          chaos.</h2>
+        <p style="color:var(--text-muted); line-height:1.7; font-size:15px;"><strong
+            style="color:var(--text-main);">Traditional study halls feel cramped and stressful.</strong> We built Nithin
+          Study Halls differently — removing visual noise, adding ergonomic comfort, and creating a space where deep
+          focus comes naturally.</p>
+        <p style="color:var(--text-muted); line-height:1.7; font-size:15px; margin-top:10px;">Your space. Your peace.
+          Your success.</p>
       </div>
     </div>
   </section>
@@ -287,17 +282,46 @@
     </div>
   </div>
 
-  <!-- CTA BANNER -->
-  <section class="cta-section reveal">
-    <div class="cta-glow"></div>
-    <div class="cta-content">
-      <div class="cta-badge">🚀 Limited seats available</div>
-      <h2>Your best study year starts today.</h2>
-      <p>Join hundreds of serious aspirants who chose calm over chaos. Your seat is waiting.</p>
-      <div class="cta-btns">
-        <a href="register.html" class="cta-btn-primary">Book Your Seat Now →</a>
-        <a href="#contact" class="cta-btn-ghost">Talk to us first</a>
+  <!-- LEAVE A REVIEW SECTION -->
+  <section class="review-form-section section reveal">
+    <div class="section-badge">✦ Share your experience</div>
+    <h2 class="section-title">Loved your time here?</h2>
+    <p class="section-subtitle">Let others know. Your review helps serious aspirants find their focus home.</p>
+
+    <div class="review-form-card">
+      <div class="review-form-left">
+        <div class="rfm-quote">&ldquo;</div>
+        <p class="rfm-tagline">Every great journey starts with one focused session.</p>
+        <div class="rfm-stats">
+          <div class="rfm-stat">
+            <span class="rfm-num">200+</span>
+            <span class="rfm-lbl">Happy Students</span>
+          </div>
+          <div class="rfm-stat">
+            <span class="rfm-num">4.9★</span>
+            <span class="rfm-lbl">Avg Rating</span>
+          </div>
+        </div>
       </div>
+
+      <form id="reviewForm" class="review-form-right">
+        <div class="rf-star-row">
+          <span class="rf-label">Your Rating</span>
+          <div class="rf-stars" id="starRating">
+            <span data-val="1">★</span>
+            <span data-val="2">★</span>
+            <span data-val="3">★</span>
+            <span data-val="4">★</span>
+            <span data-val="5">★</span>
+          </div>
+          <input type="hidden" id="reviewRating" value="0">
+        </div>
+        <input type="text" id="reviewName" placeholder="Your name" required>
+        <input type="text" id="reviewRole" placeholder="Your role (e.g. UPSC Aspirant)">
+        <textarea id="reviewText" rows="4" placeholder="Share your honest experience here…" required></textarea>
+        <button type="submit" class="rf-submit">Submit Review <span>→</span></button>
+        <div id="reviewMsg" style="font-size:14px; margin-top:10px; min-height:20px;"></div>
+      </form>
     </div>
   </section>
 
