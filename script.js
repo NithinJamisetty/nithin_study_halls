@@ -123,6 +123,7 @@ function createSeats(containerId, type, total) {
         let hasFemale = false;
         let activeNow = false;
         let anyPresent = false;
+        let hasBookings = bookings.length > 0;
 
         const currentMins = now.getHours() * 60 + now.getMinutes();
 
@@ -141,27 +142,36 @@ function createSeats(containerId, type, total) {
 
           if (isActive) {
             activeNow = true;
-            const g = (b.gender || "").trim().toLowerCase();
-            if (g === "male") hasMale = true;
-            if (g === "female") hasFemale = true;
           }
+
+          // Always grab gender!
+          const g = (b.gender || "").trim().toLowerCase();
+          if (g === "male") hasMale = true;
+          if (g === "female") hasFemale = true;
 
           if (b.isPresent) {
             anyPresent = true;
           }
         });
 
-        seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
+        seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present', 'has-booking', 'inactive-shift');
 
-        if (activeNow) {
+        if (hasBookings) {
+          seat.classList.add('has-booking');
+
           if (hasMale && hasFemale) seat.classList.add('mixed');
           else if (hasMale) seat.classList.add('male');
           else if (hasFemale) seat.classList.add('female');
           else seat.classList.add('booked');
+
+          if (!activeNow) {
+            seat.classList.add('inactive-shift');
+          }
         }
 
         if (anyPresent) {
           seat.classList.add('present');
+          seat.classList.remove('inactive-shift');
         }
       }
       updateCounts();
@@ -363,8 +373,8 @@ window.resetAll = async function () {
 };
 
 function updateCounts() {
-  let acBooked = document.querySelectorAll("#acSeats .booked, #acSeats .male, #acSeats .female, #acSeats .mixed").length;
-  let nonBooked = document.querySelectorAll("#nonSeats .booked, #nonSeats .male, #nonSeats .female, #nonSeats .mixed").length;
+  let acBooked = document.querySelectorAll("#acSeats .has-booking").length;
+  let nonBooked = document.querySelectorAll("#nonSeats .has-booking").length;
 
   document.getElementById("acBooked").innerText = acBooked;
   document.getElementById("acAvailable").innerText = acTotal - acBooked;

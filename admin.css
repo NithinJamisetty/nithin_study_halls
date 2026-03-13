@@ -320,6 +320,24 @@ body {
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
+.seat.present {
+  background: var(--seat-present);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  transform: scale(1.05);
+  border-color: var(--seat-present);
+}
+
+.seat.inactive-shift {
+  opacity: 0.4 !important;
+  border-style: dashed !important;
+}
+
+.seat.inactive-shift.present {
+  opacity: 1 !important;
+  border-style: solid !important;
+}
+
 .stat-info h3 {
   font-size: 20px;
   color: var(--text-main);
