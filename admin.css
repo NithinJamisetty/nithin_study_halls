@@ -463,8 +463,10 @@ body {
 
 .seat.present::before,
 .seat.present::after {
-  border: 2px solid #10B981 !important;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6) !important;
+  background: #10B981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4) !important;
 }
 
 /* RESET BTN */
