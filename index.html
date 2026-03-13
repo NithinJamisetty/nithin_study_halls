@@ -181,125 +181,53 @@
     </div>
   </section>
 
-  <section id="enquiry" class="section enquiry-section reveal">
-    <h2 class="section-title">Ready when you are.</h2>
-    <p class="section-subtitle">Have a question? Drop it here and we'll softly get back to you.</p>
+  <!-- DUAL PANE: Enquiry + Review side by side -->
+  <section class="dual-pane-section section reveal">
+    <div class="dual-pane-wrapper">
 
-    <div class="glass-container" style="max-width: 700px; padding: 40px;">
-      <form id="enquiryForm" class="enquiry-form">
-        <div style="display: flex; flex-direction: column; gap: 25px; width: 100%;">
-          <input type="text" id="name" placeholder="What's your name?" required>
+      <!-- LEFT: Enquiry form -->
+      <div class="dual-pane-card">
+        <div class="dual-pane-header">
+          <div class="dp-badge">📬 Get in touch</div>
+          <h3>Ready when you are.</h3>
+          <p>Have a question? Drop it here and we'll get back to you.</p>
+        </div>
+        <form id="enquiryForm" class="dp-form">
+          <input type="text" id="name" placeholder="Your name" required>
           <input type="text" id="phone" placeholder="Phone number" required>
-        </div>
-        <input type="email" id="email" placeholder="Email address" required>
-        <textarea id="message" rows="4" placeholder="How can we assist your journey?" required></textarea>
-        <button type="submit" class="submit-btn" style="width: 250px; margin: 0 auto; display: block;">Send Message
-          ✨</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- REVIEWS SECTION -->
-  <section id="reviews" class="section reveal" style="padding-top: 50px;">
-    <h2 class="section-title">A quiet impact.</h2>
-    <p class="section-subtitle">Hear from serious aspirants who found their focus.</p>
-
-    <div class="reviews-grid">
-      <!-- Review 1 -->
-      <div class="review-card">
-        <div class="review-header">
-          <img src="1.png" alt="Student" class="review-avatar">
-          <div>
-            <div class="review-author">Guna K.</div>
-            <div class="review-role">UPSC Aspirant</div>
-          </div>
-        </div>
-        <div class="review-rating">★★★★★</div>
-        <div class="review-text">"The environment here is unlike any other study hall. The silent zones and ergonomic
-          chairs have completely changed my study flow. I no longer feel exhausted after an 8-hour session."</div>
+          <input type="email" id="email" placeholder="Email address" required>
+          <textarea id="message" rows="4" placeholder="How can we help?" required></textarea>
+          <button type="submit" class="dp-submit">Send Message ✨</button>
+        </form>
       </div>
 
-      <!-- Review 2 -->
-      <div class="review-card">
-        <div class="review-header">
-          <img src="2.png" alt="Student" class="review-avatar">
-          <div>
-            <div class="review-author">Jhasu J.</div>
-            <div class="review-role">CA Finalist</div>
-          </div>
+      <!-- RIGHT: Review form -->
+      <div class="dual-pane-card dp-review-card">
+        <div class="dual-pane-header">
+          <div class="dp-badge">⭐ Share your experience</div>
+          <h3>Loved your time here?</h3>
+          <p>Let others know. Your review helps aspirants find their focus home.</p>
         </div>
-        <div class="review-rating">★★★★★</div>
-        <div class="review-text">"I needed a place with zero distractions and fast internet. Nithin Study Halls provides
-          exactly that. The AC comfort and perfectly balanced lighting are a huge plus."</div>
+        <form id="reviewForm" class="dp-form">
+          <div class="rf-star-row">
+            <span class="rf-label">Your Rating</span>
+            <div class="rf-stars" id="starRating">
+              <span data-val="1">★</span>
+              <span data-val="2">★</span>
+              <span data-val="3">★</span>
+              <span data-val="4">★</span>
+              <span data-val="5">★</span>
+            </div>
+            <input type="hidden" id="reviewRating" value="0">
+          </div>
+          <input type="text" id="reviewName" placeholder="Your name" required>
+          <input type="text" id="reviewRole" placeholder="Your role (e.g. UPSC Aspirant)">
+          <textarea id="reviewText" rows="3" placeholder="Share your honest experience…" required></textarea>
+          <button type="submit" class="dp-submit dp-submit-review">Submit Review →</button>
+          <div id="reviewMsg" style="font-size:13px; margin-top:6px; min-height:18px;"></div>
+        </form>
       </div>
 
-      <!-- Review 3 -->
-      <div class="review-card">
-        <div class="review-header">
-          <!-- Reusing an avatar or could be another image -->
-          <img src="3.png" alt="Student" class="review-avatar" style="filter: hue-rotate(45deg);">
-          <div>
-            <div class="review-author">Tharshith R.</div>
-            <div class="review-role">Medical Student</div>
-          </div>
-        </div>
-        <div class="review-rating">★★★★★</div>
-        <div class="review-text">"Booking a seat online is incredibly easy. I love that I can pick exactly where I want
-          to sit. The 365-day access is a lifesaver for late-night revisions."</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Success Modal for JS -->
-  <div id="enquirySuccessModal" class="success-modal">
-    <div class="success-content">
-      <div class="success-icon">✓</div>
-      <h2>Message received</h2>
-      <p>Thank you for reaching out. We will get back to you shortly so you can focus on what matters most.</p>
-      <button onclick="closeEnquiryModal()" class="home-btn" style="border:none;">Done</button>
-    </div>
-  </div>
-
-  <!-- LEAVE A REVIEW SECTION -->
-  <section class="review-form-section section reveal">
-    <div class="section-badge">✦ Share your experience</div>
-    <h2 class="section-title">Loved your time here?</h2>
-    <p class="section-subtitle">Let others know. Your review helps serious aspirants find their focus home.</p>
-
-    <div class="review-form-card">
-      <div class="review-form-left">
-        <div class="rfm-quote">&ldquo;</div>
-        <p class="rfm-tagline">Every great journey starts with one focused session.</p>
-        <div class="rfm-stats">
-          <div class="rfm-stat">
-            <span class="rfm-num">200+</span>
-            <span class="rfm-lbl">Happy Students</span>
-          </div>
-          <div class="rfm-stat">
-            <span class="rfm-num">4.9★</span>
-            <span class="rfm-lbl">Avg Rating</span>
-          </div>
-        </div>
-      </div>
-
-      <form id="reviewForm" class="review-form-right">
-        <div class="rf-star-row">
-          <span class="rf-label">Your Rating</span>
-          <div class="rf-stars" id="starRating">
-            <span data-val="1">★</span>
-            <span data-val="2">★</span>
-            <span data-val="3">★</span>
-            <span data-val="4">★</span>
-            <span data-val="5">★</span>
-          </div>
-          <input type="hidden" id="reviewRating" value="0">
-        </div>
-        <input type="text" id="reviewName" placeholder="Your name" required>
-        <input type="text" id="reviewRole" placeholder="Your role (e.g. UPSC Aspirant)">
-        <textarea id="reviewText" rows="4" placeholder="Share your honest experience here…" required></textarea>
-        <button type="submit" class="rf-submit">Submit Review <span>→</span></button>
-        <div id="reviewMsg" style="font-size:14px; margin-top:10px; min-height:20px;"></div>
-      </form>
     </div>
   </section>
 
@@ -366,7 +294,6 @@
         <h4 class="bf-col-title">Student Portal</h4>
         <a href="register.html">Book a Seat</a>
         <a href="checkin.html">Check-in / Out</a>
-        <a href="admin.html">Admin Panel</a>
       </div>
 
       <!-- Contact -->
