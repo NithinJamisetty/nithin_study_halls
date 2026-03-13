@@ -48,6 +48,29 @@ async function togglePresence(isPresent) {
 
         const seatId = userData.seatId;
 
+        // --- TIME VALIDATION ---
+        if (userData.startTime && userData.endTime) {
+            const now = new Date();
+            const currentMins = (now.getHours() * 60) + now.getMinutes();
+
+            const parseTimeToMins = (timeStr) => {
+                const parts = timeStr.split(':');
+                if (parts.length !== 2) return 0;
+                return (parseInt(parts[0], 10) * 60) + parseInt(parts[1], 10);
+            };
+
+            const startMins = parseTimeToMins(userData.startTime);
+            const endMins = parseTimeToMins(userData.endTime);
+
+            // Buffer: Allow check-in 15 mins early, or check-out 15 mins late
+            if (currentMins < (startMins - 15) || currentMins > (endMins + 15)) {
+                statusMsg.style.color = "#EF4444";
+                statusMsg.innerText = `Access Denied: Your registered shift is from ${userData.startTime} to ${userData.endTime}. You cannot check in or out at this time.`;
+                return;
+            }
+        }
+        // --- END TIME VALIDATION ---
+
         // 1. Update user document
         await setDoc(doc(db, "users", userDocId), { isPresent: isPresent }, { merge: true });
 

@@ -137,6 +137,19 @@ function createSeats(containerId, type, total) {
             if (currentMins >= start && currentMins <= end) {
               isActive = true;
             }
+
+            // AUTO-CHECKOUT BACKGROUND WORKER LOGIC
+            // If they are physically checked in, verify if their time is up
+            if (b.isPresent && currentMins > (end + 15)) {
+              console.log(`Auto-checkout triggered for: ${b.name}`);
+              b.isPresent = false;
+              modified = true;
+
+              // We also need to sync this to the users collection
+              if (b.phone) {
+                setDoc(doc(db, "users", b.phone), { isPresent: false }, { merge: true }).catch(console.error);
+              }
+            }
           } else {
             // Fallback for legacy data without strict times
             isActive = true;
@@ -573,8 +586,11 @@ window.sendIDWhatsApp = function (phone, id) {
   let formattedPhone = String(phone).replace(/[^0-9]/g, '');
   if (formattedPhone.length === 10) formattedPhone = '91' + formattedPhone;
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${id}`;
-  const text = `Thank you for choosing Nithin Study Halls!\n\nThis is your registered Student ID: *${id}*\n\nYou can scan the QR code at the link below directly from your phone for check-in and check-out on the student portal.\n\nYour QR Code: ${qrUrl}`;
+  // Uses the current origin (e.g., https://yourdomain.netlify.app) and appends /card.html
+  const currentDomain = window.location.origin;
+  const cardUrl = `${currentDomain}/card.html?id=${id}`;
+
+  const text = `Thank you for choosing Nithin Study Halls!\n\nThis is your registered Student ID: *${id}*\n\nPlease tap the link below to generate, view, and download your Official Digital ID Card which you can use for fast QR Code scanning on the student portal.\n\nDownload ID Card: ${cardUrl}`;
   const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 };

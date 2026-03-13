@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital ID Card - Nithin Study Halls</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card-container {
+            max-width: 600px;
+            width: 90%;
+            margin: 40px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            animation: fadeUp 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .card-container h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 30px;
+        }
+
+        canvas {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 20px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            font-family: var(--font-main);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(129, 140, 248, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(129, 140, 248, 0.4);
+        }
+
+        #loadingMessage,
+        #errorMessage {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        #errorMessage {
+            color: #EF4444;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <header class="navbar">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="8" fill="var(--accent-primary)" />
+                <path d="M7 12L10.5 15.5L18 8" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Nithin<span>Halls</span>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="checkin.html">Check-in</a>
+        </nav>
+    </header>
+
+    <div class="card-container">
+        <h2>Your Digital ID Card</h2>
+
+        <div id="loadingMessage">Generating your Digital ID Card...</div>
+        <div id="errorMessage">Invalid or expired Student ID Link.</div>
+
+        <div id="cardWrapper" class="hidden">
+            <canvas id="idCardCanvas" width="600" height="340"></canvas>
+
+            <div>
+                <button class="btn-download" id="btnDownload">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download ID Card
+                </button>
+            </div>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">Save this image to your phone's
+                gallery and scan the QR code to check in and out.</p>
+        </div>
+    </div>
+
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script type="module" src="card.js"></script>
+</body>
+
+</html>
