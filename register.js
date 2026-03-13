@@ -134,20 +134,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Show success modal
             const successModal = document.getElementById("successModal");
-            const successContent = successModal.querySelector('.success-content p');
-            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><span style="font-size: 15px; color: var(--text-muted); font-weight: 500;">Your Student ID will be sent to your registered Email shortly!</span>`;
+            const maskedDisplay = document.getElementById("maskedIdDisplay");
+            const downloadBtn = document.getElementById("downloadIdBtn");
+
+            maskedDisplay.innerText = "NSH-••••";
             successModal.style.display = "flex";
 
-            // Trigger EmailJS (Values will be filled by admin later)
-            const emailParams = {
-                to_email: email,
-                to_name: name,
-                user_id: userId
+            downloadBtn.onclick = () => {
+                downloadIDCard(name, userId, new Date().toLocaleDateString());
             };
-
-            // emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailParams)
-            //    .then(res => console.log("Email sent!", res.status, res.text))
-            //    .catch(err => console.error("Email failed...", err));
 
         } catch (error) {
             console.error("Error writing document: ", error);
@@ -282,4 +277,104 @@ async function createSeats(containerId, type, total) {
 
         container.appendChild(seat);
     }
+}
+
+// Draw and Download ID Card using Canvas
+function downloadIDCard(studentName, studentId, dateStr) {
+    const canvas = document.getElementById("idCardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Draw Background (Gradient)
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, "#EEF2FF"); // Soft Indigo light
+    gradient.addColorStop(1, "#FCE7F3"); // Soft Pink light
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. Draw Header Banner
+    ctx.fillStyle = "#2D3748";
+    ctx.beginPath();
+    ctx.roundRect(0, 0, canvas.width, 80, [0, 0, 0, 0]);
+    ctx.fill();
+
+    // 3. Draw Logo Text
+    ctx.font = "bold 32px Inter, sans-serif";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("NithinHalls", 40, 50);
+
+    // 4. Draw Title
+    ctx.font = "600 20px Inter, sans-serif";
+    ctx.fillStyle = "#A0AEC0";
+    ctx.fillText("STUDENT IDENTIFICATION", canvas.width - 280, 48);
+
+    // 5. Draw Profile Placeholder (Abstract Circle)
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.arc(120, 200, 70, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#818CF8";
+    ctx.stroke();
+
+    // Abstract lines inside circle for a "person" shape
+    ctx.fillStyle = "#E2E8F0";
+    ctx.beginPath();
+    ctx.arc(120, 185, 25, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(120, 250, 45, Math.PI, 0);
+    ctx.fill();
+
+    // 6. Draw Student Details
+    ctx.fillStyle = "#2D3748";
+
+    // Name
+    ctx.font = "bold 36px Inter, sans-serif";
+    ctx.fillText(studentName, 230, 150);
+
+    // Membership Info
+    ctx.font = "600 16px Inter, sans-serif";
+    ctx.fillStyle = "#718096";
+    ctx.fillText("MEMBER SINCE: " + dateStr, 230, 180);
+
+    // 7. Draw the ID Box
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.roundRect(230, 210, 320, 80, 16);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#818CF8";
+    ctx.stroke();
+
+    // 8. Draw the actual ID inside the box
+    ctx.font = "bold 38px monospace";
+    ctx.fillStyle = "#2D3748";
+    // Center text in the box loosely
+    ctx.fillText(studentId, 250, 265);
+
+    // 9. Trigger Download
+    const imageURI = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = imageURI;
+    link.download = `NithinHalls_ID_${studentId}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Provide visual feedback
+    const btn = document.getElementById("downloadIdBtn");
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "✓ Downloaded Successfully!";
+    btn.style.background = "#10B981";
+
+    // Reveal ID on screen as well
+    document.getElementById("maskedIdDisplay").innerText = studentId;
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))";
+    }, 3000);
 }
