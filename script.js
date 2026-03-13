@@ -141,6 +141,8 @@ function createSeats(containerId, type, total) {
           const anyPresent = bookings.some(b => b.isPresent === true);
           if (anyPresent) {
             seat.classList.add('present');
+          } else {
+            seat.classList.remove('present');
           }
         } else {
           seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
@@ -538,7 +540,7 @@ window.sendIDWhatsApp = function (phone, id) {
   if (formattedPhone.length === 10) formattedPhone = '91' + formattedPhone;
 
   const text = `Thank you for choosing Nithin Study Halls! This is your registered Student ID: *${id}*. You can use this for check-in and check-out on the student portal.`;
-  const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(text)}`;
+  const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 };
 
