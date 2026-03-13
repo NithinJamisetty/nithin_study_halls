@@ -35,6 +35,7 @@ window.login = function () {
     document.getElementById("username").value === "admin" &&
     document.getElementById("password").value === "adminbreach"
   ) {
+    sessionStorage.setItem("isAdminLoggedIn", "true");
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
     loadSeats();
@@ -48,6 +49,7 @@ window.closeLoginErrorModal = function () {
 };
 
 window.logout = function () {
+  sessionStorage.removeItem("isAdminLoggedIn");
   document.getElementById("adminPanel").style.display = "none";
   document.getElementById("loginPage").style.display = "flex";
 };
@@ -405,6 +407,12 @@ window.addEventListener('scroll', () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Check session persistence
+  if (sessionStorage.getItem("isAdminLoggedIn") === "true" && document.getElementById("loginPage")) {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
+    loadSeats();
+  }
 
   const text = "Focused.";
   const typingElement = document.getElementById("typing");

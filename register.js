@@ -173,6 +173,13 @@ async function loadSeats() {
     document.getElementById("mainContainer").style.display = "flex";
 }
 
+// Auto-refresh seats every 60 seconds
+setInterval(() => {
+    if (document.getElementById("mainContainer").style.display === "flex") {
+        loadSeats();
+    }
+}, 60000);
+
 async function createSeats(containerId, type, total) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -249,6 +256,11 @@ async function createSeats(containerId, type, total) {
                 } else {
                     seat.classList.remove("booked", "male", "female", "mixed", "semi-booked");
                 }
+            }
+
+            // Restore selection state if it just auto-refreshed
+            if (seatId === selectedSeatId) {
+                seat.classList.add('selected');
             }
         } catch (e) {
             console.error("Failed to load seat data", e);
