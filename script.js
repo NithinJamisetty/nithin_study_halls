@@ -573,7 +573,8 @@ window.sendIDWhatsApp = function (phone, id) {
   let formattedPhone = String(phone).replace(/[^0-9]/g, '');
   if (formattedPhone.length === 10) formattedPhone = '91' + formattedPhone;
 
-  const text = `Thank you for choosing Nithin Study Halls! This is your registered Student ID: *${id}*. You can use this for check-in and check-out on the student portal.`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${id}`;
+  const text = `Thank you for choosing Nithin Study Halls!\n\nThis is your registered Student ID: *${id}*\n\nYou can scan the QR code at the link below directly from your phone for check-in and check-out on the student portal.\n\nYour QR Code: ${qrUrl}`;
   const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 };

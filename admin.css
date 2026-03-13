@@ -164,14 +164,17 @@ body {
 
 /* DASHBOARD HOME */
 .dash-home-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 40px;
   padding: 20px;
   margin-bottom: 50px;
 }
 
 .dash-home-card {
+  flex: 1 1 320px;
+  max-width: 400px;
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -329,13 +332,11 @@ body {
 }
 
 .seat.inactive-shift {
-  opacity: 0.4 !important;
-  border-style: dashed !important;
+  opacity: 0.3 !important;
 }
 
 .seat.inactive-shift.present {
   opacity: 1 !important;
-  border-style: solid !important;
 }
 
 .stat-info h3 {
