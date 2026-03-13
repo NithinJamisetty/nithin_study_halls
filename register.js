@@ -310,23 +310,23 @@ function downloadIDCard(studentName, studentId, dateStr) {
     ctx.fillStyle = "#A0AEC0";
     ctx.fillText("STUDENT IDENTIFICATION", canvas.width - 280, 48);
 
-    // 5. Draw Profile Placeholder (Abstract Circle)
+    // 5. Draw Profile Frame & Generate QR Code
     ctx.fillStyle = "#FFFFFF";
     ctx.beginPath();
-    ctx.arc(120, 200, 70, 0, Math.PI * 2);
+    ctx.roundRect(50, 130, 140, 140, 16);
     ctx.fill();
     ctx.lineWidth = 4;
     ctx.strokeStyle = "#818CF8";
     ctx.stroke();
 
-    // Abstract lines inside circle for a "person" shape
-    ctx.fillStyle = "#E2E8F0";
-    ctx.beginPath();
-    ctx.arc(120, 185, 25, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(120, 250, 45, Math.PI, 0);
-    ctx.fill();
+    const qrCanvas = document.createElement("canvas");
+    new QRious({
+        element: qrCanvas,
+        value: studentId,
+        size: 120,
+        level: 'H'
+    });
+    ctx.drawImage(qrCanvas, 60, 140);
 
     // 6. Draw Student Details
     ctx.fillStyle = "#2D3748";
@@ -352,18 +352,9 @@ function downloadIDCard(studentName, studentId, dateStr) {
     // 8. Draw the actual ID inside the box
     ctx.font = "bold 38px monospace";
     ctx.fillStyle = "#2D3748";
-    // Center text in the box loosely
-    ctx.fillText(studentId, 250, 265);
-
-    // 9. Generate and Draw QR Code
-    const qrCanvas = document.createElement("canvas");
-    new QRious({
-        element: qrCanvas,
-        value: studentId,
-        size: 110,
-        level: 'H'
-    });
-    ctx.drawImage(qrCanvas, 420, 195);
+    ctx.textAlign = "center";
+    ctx.fillText(studentId, 390, 262);
+    ctx.textAlign = "left";
 
     // 10. Trigger Download
     const imageURI = canvas.toDataURL("image/png");
