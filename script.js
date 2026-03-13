@@ -446,7 +446,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 window.showDashboardHome = function () {
-  document.getElementById("dashboardHome").style.display = "grid";
+  document.getElementById("dashboardHome").style.display = "flex";
   document.getElementById("seatSection").style.display = "none";
   document.getElementById("enquirySection").style.display = "none";
   document.getElementById("usersSection").style.display = "none";

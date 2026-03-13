@@ -185,12 +185,63 @@ function onScanSuccess(decodedText, decodedResult) {
     document.getElementById("studentId").value = decodedText;
 
     // Stop scanning
-    html5QrcodeScanner.clear().then(() => {
+    html5QrcodeScanner.clear().then(async () => {
         document.getElementById("reader").style.display = "none";
-        document.getElementById("actionBtns").style.display = "flex";
-        document.getElementById("manualInputGroup").style.display = "block";
-        document.getElementById("statusMessage").style.color = "#10B981";
-        document.getElementById("statusMessage").innerText = `Successfully scanned ID: ${decodedText}. Please choose Check In or Check Out.`;
+
+        const statusMsg = document.getElementById("statusMessage");
+        statusMsg.style.color = "var(--text-main)";
+        statusMsg.innerText = "Verifying shift timing...";
+
+        try {
+            const q = query(collection(db, "users"), where("userId", "==", decodedText));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                statusMsg.style.color = "#EF4444";
+                statusMsg.innerText = "Student ID not found.";
+                document.getElementById("manualInputGroup").style.display = "block";
+                return;
+            }
+
+            let userData = null;
+            querySnapshot.forEach((docSnap) => {
+                userData = docSnap.data();
+            });
+
+            if (userData.startTime && userData.endTime) {
+                const now = new Date();
+                const currentMins = (now.getHours() * 60) + now.getMinutes();
+
+                const parseTimeToMins = (timeStr) => {
+                    const parts = timeStr.split(':');
+                    if (parts.length !== 2) return 0;
+                    return (parseInt(parts[0], 10) * 60) + parseInt(parts[1], 10);
+                };
+
+                const startMins = parseTimeToMins(userData.startTime);
+                const endMins = parseTimeToMins(userData.endTime);
+
+                if (currentMins < (startMins - 15) || currentMins > (endMins + 15)) {
+                    statusMsg.style.color = "#EF4444";
+                    statusMsg.innerText = `Access Denied: Your registered shift is from ${userData.startTime} to ${userData.endTime}. You cannot check in or out at this time.`;
+                    document.getElementById("manualInputGroup").style.display = "block";
+                    return;
+                }
+            }
+
+            // Time is valid
+            document.getElementById("actionBtns").style.display = "flex";
+            document.getElementById("manualInputGroup").style.display = "block";
+            statusMsg.style.color = "#10B981";
+            statusMsg.innerText = `Verified ${userData.name || decodedText}. Please choose Check In or Check Out.`;
+
+        } catch (e) {
+            console.error("Verification error:", e);
+            statusMsg.style.color = "#EF4444";
+            statusMsg.innerText = "Error verifying student ID.";
+            document.getElementById("manualInputGroup").style.display = "block";
+        }
+
     }).catch(error => {
         console.error("Failed to clear scanner.", error);
     });
