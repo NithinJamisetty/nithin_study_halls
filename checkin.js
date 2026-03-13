@@ -48,6 +48,14 @@ async function togglePresence(isPresent) {
 
         const seatId = userData.seatId;
 
+        // --- PAYMENT VALIDATION (checked first) ---
+        if (userData.isPaid !== true) {
+            statusMsg.style.color = "#EF4444";
+            statusMsg.innerText = "⚠️ Access Denied: Please pay your fees to the admin before checking in.";
+            return;
+        }
+        // --- END PAYMENT VALIDATION ---
+
         // --- TIME VALIDATION ---
         if (userData.startTime && userData.endTime) {
             const now = new Date();
@@ -207,6 +215,15 @@ function onScanSuccess(decodedText, decodedResult) {
             querySnapshot.forEach((docSnap) => {
                 userData = docSnap.data();
             });
+
+            // --- PAYMENT CHECK ---
+            if (userData.isPaid !== true) {
+                statusMsg.style.color = "#EF4444";
+                statusMsg.innerText = `⚠️ Access Denied: Please pay your fees to the admin before checking in.`;
+                document.getElementById("manualInputGroup").style.display = "block";
+                return;
+            }
+            // --- END PAYMENT CHECK ---
 
             if (userData.startTime && userData.endTime) {
                 const now = new Date();

@@ -111,7 +111,8 @@ function createSeats(containerId, type, total) {
 
           if (isExpired) {
             modified = true;
-            setDoc(doc(db, "users", b.phone || "unknown"), { status: "Completed" }, { merge: true }).catch(console.error);
+            // Mark status as Completed AND revoke payment so they cannot check in until re-paid
+            setDoc(doc(db, "users", b.phone || "unknown"), { status: "Completed", isPaid: false, isPresent: false }, { merge: true }).catch(console.error);
             return false;
           }
           return true;
@@ -556,6 +557,15 @@ window.loadIdsSection = async function () {
       const id = item.userId || 'N/A';
       const name = item.name || 'N/A';
       const phone = item.phone || '';
+      const isPaid = item.isPaid === true;
+
+      const paymentBadge = isPaid
+        ? `<span style="background:#D1FAE5; color:#059669; padding:4px 10px; border-radius:20px; font-size:13px; font-weight:700;">✅ Paid</span>`
+        : `<span style="background:#FEE2E2; color:#DC2626; padding:4px 10px; border-radius:20px; font-size:13px; font-weight:700;">❌ Unpaid</span>`;
+
+      const toggleLabel = isPaid ? 'Mark Unpaid' : 'Mark Paid';
+      const toggleColor = isPaid ? '#EF4444' : '#10B981';
+      const payToggleBtn = `<button onclick="togglePayment('${phone}', ${isPaid})" class="mark-btn" style="background:${toggleColor}; border:none; color:white; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;">${toggleLabel}</button>`;
 
       const whatsappBtn = `<button onclick="sendIDWhatsApp('${phone}', '${id}')" class="mark-btn" style="background: #10B981; display:flex; gap:6px; align-items:center; border:none; color:white; padding:8px 16px; border-radius:8px; cursor:pointer;">
         <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.12.553 4.195 1.604 6.014L.43 24l6.101-1.602c1.761 1 3.766 1.53 5.5 1.53 6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm3.568 17.556c-.528 1.488-2.618 2.37-3.767 2.443-1.077.069-2.394-.483-5.26-1.67-3.793-1.57-6.22-5.462-6.409-5.717-.19-.255-1.531-2.039-1.531-3.886 0-1.847.962-2.753 1.302-3.13.34-.378.736-.473.981-.473.245 0 .491.002.717.011.238.01.558-.093.873.665.32.766 1.094 2.673 1.188 2.863.094.19.151.416.019.681-.132.264-.207.425-.415.67-.207.245-.434.542-.622.75-.205.223-.424.463-.183.877.241.414 1.075 1.773 2.308 2.872 1.594 1.42 2.923 1.859 3.32 2.052.396.19.623.151.849-.113.226-.264.981-1.152 1.245-1.549.264-.396.528-.33.886-.198.358.132 2.264 1.067 2.66 1.265.396.198.66.302.755.472.094.17.094.981-.434 2.47z"/></svg> 
@@ -572,6 +582,7 @@ window.loadIdsSection = async function () {
               <strong style="color: var(--accent-primary); letter-spacing: 0.5px;">${id}</strong>
             </div>
           </td>
+          <td><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${paymentBadge}${payToggleBtn}</div></td>
           <td>${whatsappBtn}</td>
         </tr>
       `;
@@ -579,6 +590,18 @@ window.loadIdsSection = async function () {
     });
   } catch (e) {
     console.error("Error loading IDs section:", e);
+  }
+};
+
+window.togglePayment = async function (phone, currentlyPaid) {
+  const newStatus = !currentlyPaid;
+  try {
+    await setDoc(doc(db, "users", phone), { isPaid: newStatus }, { merge: true });
+    // Refresh the section
+    window.loadIdsSection();
+  } catch (e) {
+    console.error("Error updating payment status:", e);
+    alert("Failed to update payment status. Please try again.");
   }
 };
 
