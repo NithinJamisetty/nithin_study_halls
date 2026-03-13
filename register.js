@@ -135,8 +135,19 @@ document.addEventListener("DOMContentLoaded", () => {
             // Show success modal
             const successModal = document.getElementById("successModal");
             const successContent = successModal.querySelector('.success-content p');
-            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><span style="font-size: 15px; color: var(--text-muted); font-weight: 500;">Your Student ID will be securely sent to your registered WhatsApp/Phone shortly by the Admin.</span>`;
+            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><span style="font-size: 15px; color: var(--text-muted); font-weight: 500;">Your Student ID will be sent to your registered Email shortly!</span>`;
             successModal.style.display = "flex";
+
+            // Trigger EmailJS (Values will be filled by admin later)
+            const emailParams = {
+                to_email: email,
+                to_name: name,
+                user_id: userId
+            };
+
+            // emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailParams)
+            //    .then(res => console.log("Email sent!", res.status, res.text))
+            //    .catch(err => console.error("Email failed...", err));
 
         } catch (error) {
             console.error("Error writing document: ", error);
