@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBBYbyBDdr7A9vNPIHjh7S2waEhTpCTdIY",
@@ -79,7 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = true;
 
         try {
+            const userId = `NSH-${Math.floor(1000 + Math.random() * 9000)}`;
+
             const userData = {
+                userId: userId,
                 gender: gender,
                 name: name,
                 email: email,
@@ -91,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 duration: duration,
                 seatId: selectedSeatId,
                 status: "Active",
+                isPresent: false,
                 registeredAt: new Date().toISOString()
             };
 
@@ -129,7 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
             await setDoc(userRef, userData, { merge: true });
 
             // Show success modal
-            document.getElementById("successModal").style.display = "flex";
+            const successModal = document.getElementById("successModal");
+            const successContent = successModal.querySelector('.success-content p');
+            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><strong style="color:var(--text-main); font-size: 18px;">Your Student ID: ${userId}</strong><br><span style="font-size: 14px; color: var(--text-muted);">Please save this ID for Check-in / Check-out.</span>`;
+            successModal.style.display = "flex";
 
         } catch (error) {
             console.error("Error writing document: ", error);
@@ -140,7 +147,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+let allSeatsData = {};
+
 async function loadSeats() {
+    try {
+        const snapshot = await getDocs(collection(db, "seats"));
+        snapshot.forEach(docSnap => {
+            allSeatsData[docSnap.id] = docSnap.data();
+        });
+    } catch (e) {
+        console.error("Failed to fetch seats", e);
+    }
+
     await createSeats("acSeatsGrid", "AC", acTotal);
     await createSeats("nonSeatsGrid", "NON", nonTotal);
 
@@ -161,14 +179,11 @@ async function createSeats(containerId, type, total) {
 
         const seatId = `${type}_${i}`;
 
-        // Read from DB
         try {
-            const snap = await getDoc(doc(db, "seats", seatId));
+            const data = allSeatsData[seatId];
             let bookings = [];
 
-            if (snap.exists()) {
-                const data = snap.data();
-
+            if (data) {
                 // Backwards compatibility: If it's an old 1:1 seat, convert it to an array
                 if (data.phone && !data.bookings) {
                     bookings.push(data);

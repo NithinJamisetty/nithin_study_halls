@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in - Nithin Study Halls</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+        }
+
+        .checkin-container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            padding: 50px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            animation: fadeUp 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .checkin-container h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            font-family: var(--font-main);
+            font-size: 16px;
+            background: #F8FAFC;
+            outline: none;
+            transition: 0.3s;
+            color: var(--text-main);
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-group button {
+            flex: 1;
+            padding: 16px;
+            border-radius: 20px;
+            border: none;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .btn-in {
+            background: #10B981;
+        }
+
+        .btn-in:hover {
+            background: #059669;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-out {
+            background: #EF4444;
+        }
+
+        .btn-out:hover {
+            background: #DC2626;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-weight: 500;
+            min-height: 24px;
+            color: var(--text-main);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <header class="navbar">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="8" fill="var(--accent-primary)" />
+                <path d="M7 12L10.5 15.5L18 8" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Nithin<span>Halls</span>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="register.html">Register</a>
+            <a href="admin.html">Admin</a>
+        </nav>
+    </header>
+
+    <div class="checkin-container">
+        <h2>Student Check-in</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">Enter your Student ID to check in or out of the study
+            hall.</p>
+
+        <div class="input-group">
+            <label>Student ID</label>
+            <input type="text" id="studentId" placeholder="e.g. NSH-1234">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-in" id="btnIn">Check In</button>
+            <button class="btn-out" id="btnOut">Check Out</button>
+        </div>
+
+        <div id="statusMessage" class="message"></div>
+    </div>
+
+    <script type="module" src="checkin.js"></script>
+</body>
+
+</html>

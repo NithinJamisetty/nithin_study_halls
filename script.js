@@ -52,7 +52,18 @@ window.logout = function () {
   document.getElementById("loginPage").style.display = "flex";
 };
 
+let allSeatsData = {};
+
 async function loadSeats() {
+  try {
+    const snapshot = await getDocs(collection(db, "seats"));
+    snapshot.forEach(docSnap => {
+      allSeatsData[docSnap.id] = docSnap.data();
+    });
+  } catch (e) {
+    console.error("Failed to fetch seats", e);
+  }
+
   createSeats("acSeats", "AC", acTotal);
   createSeats("nonSeats", "NON", nonTotal);
 }
@@ -68,11 +79,11 @@ function createSeats(containerId, type, total) {
 
     const seatId = `${type}_${i}`;
 
-    getDoc(doc(db, "seats", seatId)).then(async (snap) => {
+    const processSeat = async () => {
       let bookings = [];
-      if (snap.exists()) {
-        const data = snap.data();
+      const data = allSeatsData[seatId];
 
+      if (data) {
         // Backwards compatibility
         if (data.phone && !data.bookings) bookings.push(data);
         else if (data.bookings) bookings = data.bookings;
@@ -120,17 +131,24 @@ function createSeats(containerId, type, total) {
             if (g === "female") hasFemale = true;
           });
 
-          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked');
+          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
           if (hasMale && hasFemale) seat.classList.add('mixed');
           else if (hasMale) seat.classList.add('male');
           else if (hasFemale) seat.classList.add('female');
           else seat.classList.add('booked'); // fallback for legacy data missing gender
+
+          // Check presence
+          const anyPresent = bookings.some(b => b.isPresent === true);
+          if (anyPresent) {
+            seat.classList.add('present');
+          }
         } else {
-          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked');
+          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
         }
       }
       updateCounts();
-    });
+    };
+    processSeat();
 
     seat.onclick = async function () {
       try {
