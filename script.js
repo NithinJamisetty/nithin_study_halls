@@ -466,6 +466,12 @@ async function loadUsers() {
 
       const row = `
         <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #F4F6F8; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px;">🆔</span>
+              <strong style="color: var(--accent-primary); letter-spacing: 0.5px;">${item.userId || 'N/A'}</strong>
+            </div>
+          </td>
           <td>${item.name || 'N/A'}</td>
           <td>${item.email || 'N/A'}</td>
           <td>${item.phone || 'N/A'}</td>

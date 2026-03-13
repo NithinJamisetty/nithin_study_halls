@@ -90,3 +90,53 @@ async function togglePresence(isPresent) {
 
 document.getElementById("btnIn").addEventListener("click", () => togglePresence(true));
 document.getElementById("btnOut").addEventListener("click", () => togglePresence(false));
+
+// Recovery Logic
+document.getElementById("toggleRecover").addEventListener("click", () => {
+    const section = document.getElementById("recoverSection");
+    if (section.style.display === "block") {
+        section.style.display = "none";
+        document.getElementById("toggleRecover").innerText = "Forgot your ID?";
+    } else {
+        section.style.display = "block";
+        document.getElementById("toggleRecover").innerText = "Hide Recovery";
+    }
+});
+
+document.getElementById("btnRecover").addEventListener("click", async () => {
+    const phone = document.getElementById("recoverPhone").value.trim();
+    const email = document.getElementById("recoverEmail").value.trim().toLowerCase();
+    const recoverMsg = document.getElementById("recoverMessage");
+
+    if (!phone || !email) {
+        recoverMsg.style.color = "#EF4444";
+        recoverMsg.innerText = "Please provide both phone number and email.";
+        return;
+    }
+
+    recoverMsg.style.color = "var(--text-main)";
+    recoverMsg.innerText = "Searching...";
+
+    try {
+        const userRef = doc(db, "users", phone);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            if (data.email && data.email.toLowerCase() === email) {
+                recoverMsg.style.color = "#10B981";
+                recoverMsg.innerHTML = `Found it! Your ID is: <br><strong style="font-size:22px; margin-top:8px; display:inline-block; color:var(--accent-primary); letter-spacing:1px;">${data.userId}</strong>`;
+            } else {
+                recoverMsg.style.color = "#EF4444";
+                recoverMsg.innerText = "Email does not match our records for this phone number.";
+            }
+        } else {
+            recoverMsg.style.color = "#EF4444";
+            recoverMsg.innerText = "No student found with this phone number.";
+        }
+    } catch (e) {
+        console.error("Recovery error:", e);
+        recoverMsg.style.color = "#EF4444";
+        recoverMsg.innerText = "An error occurred. Please try again.";
+    }
+});

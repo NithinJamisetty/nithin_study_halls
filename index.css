@@ -160,6 +160,8 @@ body {
   display: flex;
   gap: 35px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .navbar nav a {
@@ -520,7 +522,8 @@ body {
   box-shadow: var(--shadow-soft);
   max-width: 800px;
   margin: 0 auto;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 25px;
   border: 1px solid rgba(0, 0, 0, 0.02);
 }
