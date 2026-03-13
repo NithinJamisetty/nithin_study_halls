@@ -1720,7 +1720,8 @@ footer {
   font-weight: 700;
   cursor: pointer;
   transition: 0.3s;
-  margin-top: 4px;
+  margin-top: auto;
+  /* pins button to bottom of the flex form */
   letter-spacing: 0.3px;
 }
 
