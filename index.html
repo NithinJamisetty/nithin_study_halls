@@ -212,10 +212,12 @@
           <p>Have a question? Drop it here and we'll get back to you.</p>
         </div>
         <form id="enquiryForm" class="dp-form">
-          <input type="text" id="name" placeholder="Your name" required>
-          <input type="text" id="phone" placeholder="Phone number" required>
-          <input type="email" id="email" placeholder="Email address" required>
-          <textarea id="message" rows="4" placeholder="How can we help?" required></textarea>
+          <div class="dp-fields">
+            <input type="text" id="name" placeholder="Your name" required>
+            <input type="text" id="phone" placeholder="Phone number" required>
+            <input type="email" id="email" placeholder="Email address" required>
+            <textarea id="message" rows="5" placeholder="How can we help?" required></textarea>
+          </div>
           <button type="submit" class="dp-submit">Send Message ✨</button>
         </form>
       </div>
@@ -228,22 +230,24 @@
           <p>Let others know. Your review helps aspirants find their focus home.</p>
         </div>
         <form id="reviewForm" class="dp-form">
-          <div class="rf-star-row">
-            <span class="rf-label">Your Rating</span>
-            <div class="rf-stars" id="starRating">
-              <span data-val="1">★</span>
-              <span data-val="2">★</span>
-              <span data-val="3">★</span>
-              <span data-val="4">★</span>
-              <span data-val="5">★</span>
+          <div class="dp-fields">
+            <div class="rf-star-row">
+              <span class="rf-label">Your Rating</span>
+              <div class="rf-stars" id="starRating">
+                <span data-val="1">★</span>
+                <span data-val="2">★</span>
+                <span data-val="3">★</span>
+                <span data-val="4">★</span>
+                <span data-val="5">★</span>
+              </div>
+              <input type="hidden" id="reviewRating" value="0">
             </div>
-            <input type="hidden" id="reviewRating" value="0">
+            <input type="text" id="reviewName" placeholder="Your name" required>
+            <input type="text" id="reviewRole" placeholder="Your role (e.g. UPSC Aspirant)">
+            <textarea id="reviewText" rows="5" placeholder="Share your honest experience…" required></textarea>
           </div>
-          <input type="text" id="reviewName" placeholder="Your name" required>
-          <input type="text" id="reviewRole" placeholder="Your role (e.g. UPSC Aspirant)">
-          <textarea id="reviewText" rows="3" placeholder="Share your honest experience…" required></textarea>
           <button type="submit" class="dp-submit dp-submit-review">Submit Review →</button>
-          <div id="reviewMsg" style="font-size:13px; margin-top:6px; min-height:18px;"></div>
+          <div id="reviewMsg" style="font-size:13px; margin-top:8px; min-height:18px;"></div>
         </form>
       </div>
 

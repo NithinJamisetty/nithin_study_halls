@@ -1680,13 +1680,21 @@ footer {
 .dp-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   flex: 1;
-  /* fills all remaining card height */
   margin-top: 24px;
-  /* gap between header and form */
 }
 
+/* Growing block — absorbs ALL remaining vertical space in the card */
+.dp-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.dp-fields input,
+.dp-fields textarea,
 .dp-form input,
 .dp-form textarea {
   width: 100%;
@@ -1723,9 +1731,8 @@ footer {
   font-weight: 700;
   cursor: pointer;
   transition: 0.3s;
-  margin-top: auto;
-  /* pins button to bottom of the flex form */
   letter-spacing: 0.3px;
+  /* button is naturally at bottom — no margin-top:auto needed */
 }
 
 .dp-submit:hover {
