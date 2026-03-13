@@ -324,11 +324,10 @@ body {
 }
 
 .seat.present {
-  background: var(--seat-present);
-  color: white;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
   transform: scale(1.05);
-  border-color: var(--seat-present);
 }
 
 .seat.inactive-shift {
