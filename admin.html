@@ -107,6 +107,14 @@
             style="position:static; transform:none; display:inline-block; margin-left:8px;">●</span></h2>
         <p>Respond to new leads and queries from the landing page.</p>
       </div>
+
+      <div class="dash-home-card" onclick="openHomeSection('ids')">
+        <div class="dash-card-img-wrapper">
+          <img src="dash_primary_ids.png" alt="Primary IDs">
+        </div>
+        <h2>Primary IDs</h2>
+        <p>Manage generated Student IDs and send them securely via WhatsApp.</p>
+      </div>
     </div>
 
     <!-- SEAT SECTION -->
@@ -225,6 +233,26 @@
             </tr>
           </thead>
           <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IDS SECTION -->
+    <div id="idsSection" style="display:none;">
+      <button class="back-home-btn" onclick="showDashboardHome()">← Back to Dashboard</button>
+      <div class="section-wrapper">
+        <h2 style="color:var(--text); font-family:var(--font-heading); text-transform:uppercase;">Primary ID Management
+          (WhatsApp)</h2>
+        <table class="enquiry-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Primary ID</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="idsTable"></tbody>
         </table>
       </div>
     </div>

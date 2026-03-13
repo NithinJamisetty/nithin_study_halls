@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Show success modal
             const successModal = document.getElementById("successModal");
             const successContent = successModal.querySelector('.success-content p');
-            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><strong style="color:var(--text-main); font-size: 18px;">Your Student ID: ${userId}</strong><br><span style="font-size: 14px; color: var(--text-muted);">Please save this ID for Check-in / Check-out.</span>`;
+            successContent.innerHTML = `Your seat has been reserved. Please visit the study hall to complete payment.<br><br><span style="font-size: 15px; color: var(--text-muted); font-weight: 500;">Your Student ID will be securely sent to your registered WhatsApp/Phone shortly by the Admin.</span>`;
             successModal.style.display = "flex";
 
         } catch (error) {

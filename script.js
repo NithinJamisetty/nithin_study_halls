@@ -401,6 +401,8 @@ window.showDashboardHome = function () {
   document.getElementById("seatSection").style.display = "none";
   document.getElementById("enquirySection").style.display = "none";
   document.getElementById("usersSection").style.display = "none";
+  const idsSection = document.getElementById("idsSection");
+  if (idsSection) idsSection.style.display = "none";
 };
 
 window.openHomeSection = function (section) {
@@ -412,16 +414,21 @@ window.showSection = function (section) {
   const seatSection = document.getElementById("seatSection");
   const enquirySection = document.getElementById("enquirySection");
   const usersSection = document.getElementById("usersSection");
+  const idsSection = document.getElementById("idsSection");
 
   seatSection.style.display = "none";
   enquirySection.style.display = "none";
   usersSection.style.display = "none";
+  if (idsSection) idsSection.style.display = "none";
 
   if (section === "seats") {
     seatSection.style.display = "block";
   } else if (section === "users") {
     usersSection.style.display = "block";
     loadUsers();
+  } else if (section === "ids") {
+    if (idsSection) idsSection.style.display = "block";
+    loadIdsSection();
   } else {
     enquirySection.style.display = "block";
     loadEnquiries();
@@ -487,6 +494,53 @@ async function loadUsers() {
     console.error("Error loading users:", error);
   }
 }
+
+window.loadIdsSection = async function () {
+  try {
+    const snapshot = await getDocs(collection(db, "users"));
+    const table = document.getElementById("idsTable");
+    if (!table) return;
+    table.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const item = docSnap.data();
+      const id = item.userId || 'N/A';
+      const name = item.name || 'N/A';
+      const phone = item.phone || '';
+
+      const whatsappBtn = `<button onclick="sendIDWhatsApp('${phone}', '${id}')" class="mark-btn" style="background: #10B981; display:flex; gap:6px; align-items:center; border:none; color:white; padding:8px 16px; border-radius:8px; cursor:pointer;">
+        <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.12.553 4.195 1.604 6.014L.43 24l6.101-1.602c1.761 1 3.766 1.53 5.5 1.53 6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm3.568 17.556c-.528 1.488-2.618 2.37-3.767 2.443-1.077.069-2.394-.483-5.26-1.67-3.793-1.57-6.22-5.462-6.409-5.717-.19-.255-1.531-2.039-1.531-3.886 0-1.847.962-2.753 1.302-3.13.34-.378.736-.473.981-.473.245 0 .491.002.717.011.238.01.558-.093.873.665.32.766 1.094 2.673 1.188 2.863.094.19.151.416.019.681-.132.264-.207.425-.415.67-.207.245-.434.542-.622.75-.205.223-.424.463-.183.877.241.414 1.075 1.773 2.308 2.872 1.594 1.42 2.923 1.859 3.32 2.052.396.19.623.151.849-.113.226-.264.981-1.152 1.245-1.549.264-.396.528-.33.886-.198.358.132 2.264 1.067 2.66 1.265.396.198.66.302.755.472.094.17.094.981-.434 2.47z"/></svg> 
+        Send ID
+      </button>`;
+
+      const row = `
+        <tr>
+          <td>${name}</td>
+          <td>${phone}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #F4F6F8; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px;">🆔</span>
+              <strong style="color: var(--accent-primary); letter-spacing: 0.5px;">${id}</strong>
+            </div>
+          </td>
+          <td>${whatsappBtn}</td>
+        </tr>
+      `;
+      table.innerHTML += row;
+    });
+  } catch (e) {
+    console.error("Error loading IDs section:", e);
+  }
+};
+
+window.sendIDWhatsApp = function (phone, id) {
+  let formattedPhone = String(phone).replace(/[^0-9]/g, '');
+  if (formattedPhone.length === 10) formattedPhone = '91' + formattedPhone;
+
+  const text = `Thank you for choosing Nithin Study Halls! This is your registered Student ID: *${id}*. You can use this for check-in and check-out on the student portal.`;
+  const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+};
 
 window.markUserCompleted = async function (id) {
   try {
