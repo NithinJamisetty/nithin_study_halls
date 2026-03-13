@@ -119,33 +119,49 @@ function createSeats(containerId, type, total) {
           await setDoc(doc(db, "seats", seatId), { bookings: bookings });
         }
 
-        if (bookings.length >= 3) {
-          seat.classList.add('booked');
-          seat.classList.remove('male', 'female', 'mixed', 'semi-booked');
-        } else if (bookings.length > 0) {
-          let hasMale = false;
-          let hasFemale = false;
-          bookings.forEach(b => {
+        let hasMale = false;
+        let hasFemale = false;
+        let activeNow = false;
+        let anyPresent = false;
+
+        const currentMins = now.getHours() * 60 + now.getMinutes();
+
+        bookings.forEach(b => {
+          let isActive = false;
+          if (b.startTime && b.endTime) {
+            const start = parseTimeToMinutes(b.startTime);
+            const end = parseTimeToMinutes(b.endTime);
+            if (currentMins >= start && currentMins <= end) {
+              isActive = true;
+            }
+          } else {
+            // Fallback for legacy data without strict times
+            isActive = true;
+          }
+
+          if (isActive) {
+            activeNow = true;
             const g = (b.gender || "").trim().toLowerCase();
             if (g === "male") hasMale = true;
             if (g === "female") hasFemale = true;
-          });
+          }
 
-          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
+          if (b.isPresent) {
+            anyPresent = true;
+          }
+        });
+
+        seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
+
+        if (activeNow) {
           if (hasMale && hasFemale) seat.classList.add('mixed');
           else if (hasMale) seat.classList.add('male');
           else if (hasFemale) seat.classList.add('female');
-          else seat.classList.add('booked'); // fallback for legacy data missing gender
+          else seat.classList.add('booked');
+        }
 
-          // Check presence
-          const anyPresent = bookings.some(b => b.isPresent === true);
-          if (anyPresent) {
-            seat.classList.add('present');
-          } else {
-            seat.classList.remove('present');
-          }
-        } else {
-          seat.classList.remove('booked', 'male', 'female', 'mixed', 'semi-booked', 'present');
+        if (anyPresent) {
+          seat.classList.add('present');
         }
       }
       updateCounts();
@@ -745,3 +761,11 @@ window.markContacted = async function (id) {
   });
   loadEnquiries();
 }
+
+// Auto-refresh seat colors every minute to reflect real-time vacancies
+setInterval(() => {
+  if (document.getElementById("adminPanel").style.display === "block" && document.getElementById("seatSection").style.display === "block") {
+    createSeats("acSeats", "AC", acTotal);
+    createSeats("nonSeats", "NON", nonTotal);
+  }
+}, 60000);

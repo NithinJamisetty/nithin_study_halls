@@ -355,7 +355,17 @@ function downloadIDCard(studentName, studentId, dateStr) {
     // Center text in the box loosely
     ctx.fillText(studentId, 250, 265);
 
-    // 9. Trigger Download
+    // 9. Generate and Draw QR Code
+    const qrCanvas = document.createElement("canvas");
+    new QRious({
+        element: qrCanvas,
+        value: studentId,
+        size: 110,
+        level: 'H'
+    });
+    ctx.drawImage(qrCanvas, 420, 195);
+
+    // 10. Trigger Download
     const imageURI = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = imageURI;

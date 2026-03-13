@@ -139,6 +139,41 @@
             color: var(--text-main);
         }
 
+        #reader {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 20px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            display: none;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .scan-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border-radius: 20px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            font-family: var(--font-main);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(129, 140, 248, 0.3);
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(129, 140, 248, 0.4);
+        }
+
         .btn-recover {
             width: 100%;
             padding: 16px;
@@ -194,17 +229,29 @@
 
     <div class="checkin-container">
         <h2>Student Check-in</h2>
-        <p style="color: var(--text-muted); margin-bottom: 30px;">Enter your Student ID to check in or out of the study
-            hall.</p>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">Scan your Digital ID Card to check in or out of the
+            study hall.</p>
 
-        <div class="input-group">
-            <label>Student ID</label>
+        <button id="startScanBtn" class="scan-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"></path>
+                <path d="M12 11v2h2"></path>
+            </svg>
+            Click to Scan QR Code
+        </button>
+
+        <div id="reader"></div>
+
+        <div class="input-group" style="display: none;" id="manualInputGroup">
+            <label>Student ID (Manual fallback)</label>
             <input type="text" id="studentId" placeholder="e.g. NSH-1234">
         </div>
 
-        <div class="btn-group">
-            <button class="btn-in" id="btnIn">Check In</button>
-            <button class="btn-out" id="btnOut">Check Out</button>
+        <div class="btn-group" id="actionBtns" style="display: none;">
+            <button class="btn-in" id="btnIn">Scan to Check In</button>
+            <button class="btn-out" id="btnOut">Scan to Check Out</button>
         </div>
 
         <div id="statusMessage" class="message"></div>
@@ -230,6 +277,8 @@
         </div>
     </div>
 
+    <!-- HTML5 QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script type="module" src="checkin.js"></script>
 </body>
 

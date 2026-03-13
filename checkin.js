@@ -140,3 +140,39 @@ document.getElementById("btnRecover").addEventListener("click", async () => {
         recoverMsg.innerText = "An error occurred. Please try again.";
     }
 });
+
+// QR Code Scanner Logic
+let html5QrcodeScanner = null;
+
+document.getElementById("startScanBtn").addEventListener("click", () => {
+    document.getElementById("startScanBtn").style.display = "none";
+    document.getElementById("reader").style.display = "block";
+
+    html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        /* verbose= */ false
+    );
+
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+});
+
+function onScanSuccess(decodedText, decodedResult) {
+    // Handle the scanned code
+    document.getElementById("studentId").value = decodedText;
+
+    // Stop scanning
+    html5QrcodeScanner.clear().then(() => {
+        document.getElementById("reader").style.display = "none";
+        document.getElementById("actionBtns").style.display = "flex";
+        document.getElementById("manualInputGroup").style.display = "block";
+        document.getElementById("statusMessage").style.color = "#10B981";
+        document.getElementById("statusMessage").innerText = `Successfully scanned ID: ${decodedText}. Please choose Check In or Check Out.`;
+    }).catch(error => {
+        console.error("Failed to clear scanner.", error);
+    });
+}
+
+function onScanFailure(error) {
+    // Ignore routine scan failures (when no QR code is in frame)
+}
