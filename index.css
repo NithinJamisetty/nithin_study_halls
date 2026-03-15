@@ -1689,12 +1689,11 @@ footer {
   flex-shrink: 0;
 }
 
-/* Growing block — absorbs ALL remaining vertical space in the card */
+/* Form block */
 .dp-fields {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1;
 }
 
 .dp-fields input,
