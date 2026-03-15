@@ -1,3 +1,19 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBBYbyBDdr7A9vNPIHjh7S2waEhTpCTdIY",
+  authDomain: "radha-study-halls.firebaseapp.com",
+  projectId: "radha-study-halls",
+  storageBucket: "radha-study-halls.firebasestorage.app",
+  messagingSenderId: "38343553963",
+  appId: "1:38343553963:web:fcbc614aaa081f1e0d58ee",
+  measurementId: "G-BZLBHFML74"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Nithin Study Halls Premium Website Loaded");
 
@@ -186,26 +202,25 @@ document.addEventListener("DOMContentLoaded", function () {
       msg.textContent = 'Submitting...';
 
       try {
-        const response = await fetch('https://rsh-backend-production.up.railway.app/review', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, role, text, rating })
+        // Switch to Firestore for reliable storage
+        const reviewId = "REV-" + Date.now();
+        await setDoc(doc(db, "reviews", reviewId), {
+          name,
+          role,
+          text,
+          rating,
+          createdAt: new Date().toISOString()
         });
 
-        if (response.ok) {
-          document.getElementById('reviewSuccessModal').style.display = 'flex';
-          reviewForm.reset();
-          stars.forEach(s => s.classList.remove('active', 'hovered'));
-          if (ratingInput) ratingInput.value = 0;
-          msg.textContent = "";
-        } else {
-          msg.style.color = '#EF4444';
-          msg.textContent = 'Failed to submit. Try again.';
-        }
+        document.getElementById('reviewSuccessModal').style.display = 'flex';
+        reviewForm.reset();
+        stars.forEach(s => s.classList.remove('active', 'hovered'));
+        if (ratingInput) ratingInput.value = 0;
+        msg.textContent = "";
       } catch (error) {
         console.error("Review Error:", error);
         msg.style.color = '#EF4444';
-        msg.textContent = 'Server error. Try again.';
+        msg.textContent = 'Failed to submit. Try again.';
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;

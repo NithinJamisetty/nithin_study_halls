@@ -828,13 +828,20 @@ window.markContacted = async function (id) {
 
 async function loadReviews() {
   try {
-    const response = await fetch("https://rsh-backend-production.up.railway.app/reviews");
-    const data = await response.json();
+    const snapshot = await getDocs(collection(db, "reviews"));
+    const data = [];
+    snapshot.forEach(docSnap => {
+      data.push({ id: docSnap.id, ...docSnap.data() });
+    });
 
     const table = document.getElementById("reviewsTable");
+    if (!table) return;
     table.innerHTML = "";
 
-    data.reverse().forEach(item => {
+    // Sort by createdAt desc
+    data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    data.forEach(item => {
       let stars = "";
       for (let i = 0; i < item.rating; i++) stars += "⭐";
 
@@ -846,9 +853,9 @@ async function loadReviews() {
             <td>${item.text}</td>
             <td>${new Date(item.createdAt).toLocaleString()}</td>
             <td>
-            <button onclick="deleteReview('${item._id}')" class="mark-btn" style="background: #e74c3c; border:none; padding:6px 14px; border-radius:6px; color:white; cursor:pointer;">
-              Delete
-            </button>
+              <button onclick="deleteReview('${item.id}')" class="mark-btn" style="background: #e74c3c; border:none; padding:6px 14px; border-radius:6px; color:white; cursor:pointer;">
+                Delete
+              </button>
             </td>
           </tr>
         `;
@@ -856,24 +863,18 @@ async function loadReviews() {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error("Error loading reviews:", error);
   }
 }
 
 window.deleteReview = async function (id) {
   try {
-    const response = await fetch(
-      `https://rsh-backend-production.up.railway.app/review/${id}`,
-      {
-        method: "DELETE"
-      }
-    );
+    const confirmDelete = confirm("Are you sure you want to delete this review?");
+    if (!confirmDelete) return;
 
-    const result = await response.json();
-    console.log(result);
-
+    await deleteDoc(doc(db, "reviews", id));
+    console.log("Review deleted:", id);
     loadReviews();
-
   } catch (error) {
     console.error("Delete review error:", error);
   }
