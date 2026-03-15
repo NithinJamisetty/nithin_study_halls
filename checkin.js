@@ -318,3 +318,23 @@ async function processScannedCode(decodedText) {
 function onScanFailure(error) {
     // Ignore routine scan failures (when no QR code is in frame)
 }
+
+  /* ===============================
+     Navbar Hide on Scroll
+  =================================*/
+  let lastScrollTop = 0;
+  const navbar = document.querySelector('.navbar');
+  if (navbar) {
+    console.log("Navbar scroll listener attached (Checkin)");
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if (Math.abs(lastScrollTop - scrollTop) <= 5) return;
+
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        navbar.classList.add('navbar--hidden');
+      } else {
+        navbar.classList.remove('navbar--hidden');
+      }
+      lastScrollTop = scrollTop;
+    }, { passive: true });
+  }

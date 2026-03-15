@@ -1124,3 +1124,14 @@ body {
     white-space: nowrap;
   }
 }
+.admin-header--hidden {
+  transform: translateY(-100%);
+}
+
+.admin-header {
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s;
+}
+
+.admin-header {
+  will-change: transform;
+}

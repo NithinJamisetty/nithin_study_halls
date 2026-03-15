@@ -138,8 +138,13 @@ body {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s, padding 0.3s;
+  will-change: transform;
+}
+
+.navbar--hidden {
+  transform: translateY(-100%);
 }
 
 .navbar .logo {
@@ -2082,5 +2087,29 @@ footer {
 
   .dual-pane-card {
     padding: 32px 28px;
+  }
+}
+@media (max-width: 480px) {
+  .navbar {
+    padding: 12px 15px;
+  }
+  .navbar .logo {
+    font-size: 18px;
+  }
+  .navbar nav {
+    gap: 12px;
+  }
+  .navbar nav a {
+    font-size: 12px;
+  }
+  .admin-btn {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+  .hero {
+    padding-top: 60px;
+  }
+  .hero h1 {
+    font-size: 11vw;
   }
 }

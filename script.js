@@ -887,3 +887,24 @@ setInterval(() => {
     createSeats("nonSeats", "NON", nonTotal);
   }
 }, 60000);
+
+  /* ===============================
+     Navbar Hide on Scroll
+  =================================*/
+  let lastScrollTop = 0;
+  // In admin, we use .admin-header instead of .navbar
+  const navbar = document.querySelector('.admin-header');
+  if (navbar) {
+    console.log("Navbar scroll listener attached (Admin)");
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if (Math.abs(lastScrollTop - scrollTop) <= 5) return;
+
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        navbar.classList.add('admin-header--hidden');
+      } else {
+        navbar.classList.remove('admin-header--hidden');
+      }
+      lastScrollTop = scrollTop;
+    }, { passive: true });
+  }
