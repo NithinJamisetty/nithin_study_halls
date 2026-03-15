@@ -113,6 +113,18 @@ window.closeEnquiryModal = function () {
   document.getElementById("enquirySuccessModal").style.display = "none";
 };
 
+window.closeReviewModal = function () {
+  document.getElementById("reviewSuccessModal").style.display = "none";
+};
+
+// Close modals when clicking background
+window.addEventListener('click', (e) => {
+  const enquiryModal = document.getElementById("enquirySuccessModal");
+  const reviewModal = document.getElementById("reviewSuccessModal");
+  if (e.target === enquiryModal) enquiryModal.style.display = "none";
+  if (e.target === reviewModal) reviewModal.style.display = "none";
+});
+
 // Fade animation
 const fades = document.querySelectorAll('.fade-up');
 
@@ -234,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       msg.style.color = '#10B981';
       msg.textContent = '✅ Thanks ' + name + '! Your review means the world to us.';
+      document.getElementById('reviewSuccessModal').style.display = 'flex';
       reviewForm.reset();
       stars.forEach(s => s.classList.remove('active', 'hovered'));
       ratingInput.value = 0;
