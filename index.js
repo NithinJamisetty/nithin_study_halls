@@ -1,51 +1,46 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-  console.log("Radha Study Halls Premium Website Loaded");
+  console.log("Nithin Study Halls Premium Website Loaded");
 
   /* ===============================
      1️⃣ Typing Animation
   =================================*/
-
-  const typingElement = document.getElementById("typing-text");
-
+  const typingElement = document.getElementById("typing-text") || document.getElementById("typing");
   if (typingElement) {
-    const text = "Focused Space For Serious Aspirants";
+    const text = typingElement.id === "typing" 
+      ? "Focused. Space for Serious Aspirants." 
+      : "Focused Space For Serious Aspirants";
     let index = 0;
 
     function type() {
       if (index < text.length) {
         typingElement.innerHTML += text.charAt(index);
         index++;
-        setTimeout(type, 50);
+        setTimeout(type, 70);
       }
     }
-
     type();
   }
 
   /* ===============================
-     2️⃣ Scroll Reveal (simple)
+     2️⃣ Scroll Reveal 
   =================================*/
-
   const reveals = document.querySelectorAll(".reveal");
-
-  window.addEventListener("scroll", () => {
+  const revealOnScroll = () => {
     reveals.forEach(section => {
       const windowHeight = window.innerHeight;
       const elementTop = section.getBoundingClientRect().top;
-
       if (elementTop < windowHeight - 100) {
         section.classList.add("active");
       }
     });
-  });
+  };
+  window.addEventListener("scroll", revealOnScroll);
+  revealOnScroll(); // Initial check
 
   /* ===============================
      3️⃣ Cursor Glow Follow
   =================================*/
-
   const glow = document.querySelector(".cursor-glow");
-
   if (glow) {
     document.addEventListener("mousemove", e => {
       glow.style.left = e.clientX + "px";
@@ -54,109 +49,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ===============================
-     4️⃣ Intersection Observer Fade
+     4️⃣ Smooth Scroll for Anchor Links
   =================================*/
-
-  const faders = document.querySelectorAll('.fade');
-
-  if (faders.length > 0) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        }
-      });
-    }, { threshold: 0.2 });
-
-    faders.forEach(el => observer.observe(el));
-  }
-
-});
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute("href"))
-      .scrollIntoView({ behavior: "smooth" });
-  });
-});
-
-console.log("Website Loaded Successfully");
-
-document.getElementById("enquiryForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const data = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    message: document.getElementById("message").value
-  };
-
-  try {
-    const response = await fetch("https://rsh-backend-production.up.railway.app/enquiry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+      const targetId = this.getAttribute("href");
+      if (targetId === "#") return;
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        targetEl.scrollIntoView({ behavior: "smooth" });
+      }
     });
-
-    const result = await response.json();
-    document.getElementById("enquirySuccessModal").style.display = "flex";
-    document.getElementById("enquiryForm").reset();
-  } catch (error) {
-    console.log(error);
-    alert("Error submitting enquiry");
-  }
-});
-
-window.closeEnquiryModal = function () {
-  document.getElementById("enquirySuccessModal").style.display = "none";
-};
-
-window.closeReviewModal = function () {
-  document.getElementById("reviewSuccessModal").style.display = "none";
-};
-
-// Close modals when clicking background
-window.addEventListener('click', (e) => {
-  const enquiryModal = document.getElementById("enquirySuccessModal");
-  const reviewModal = document.getElementById("reviewSuccessModal");
-  if (e.target === enquiryModal) enquiryModal.style.display = "none";
-  if (e.target === reviewModal) reviewModal.style.display = "none";
-});
-
-// Fade animation
-const fades = document.querySelectorAll('.fade-up');
-
-window.addEventListener("scroll", () => {
-  fades.forEach(el => {
-    const top = el.getBoundingClientRect().top;
-    if (top < window.innerHeight - 100) {
-      el.classList.add("show");
-    }
   });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  const text = "Focused. Space for Serious Aspirants.";
-  let i = 0;
-
-  function type() {
-    if (i < text.length) {
-      document.getElementById("typing").innerHTML += text.charAt(i);
-      i++;
-      setTimeout(type, 70);
-    }
-  }
-
-  type();
 
   /* ===============================
-     Animated Counter
+     5️⃣ Stat Counters
   =================================*/
   const counters = document.querySelectorAll('.stat-number');
-
   const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -175,28 +85,24 @@ document.addEventListener("DOMContentLoaded", function () {
             el.textContent = target;
           }
         };
-
         tick();
         counterObserver.unobserve(el);
       }
     });
   }, { threshold: 0.5 });
-
   counters.forEach(el => counterObserver.observe(el));
 
   /* ===============================
-     Star Rating for Review Form
+     6️⃣ Star Rating System
   =================================*/
   const stars = document.querySelectorAll('#starRating span');
   const ratingInput = document.getElementById('reviewRating');
 
-  if (stars.length) {
+  if (stars.length && ratingInput) {
     stars.forEach(star => {
       star.addEventListener('mouseenter', () => {
         const val = parseInt(star.getAttribute('data-val'));
-        stars.forEach(s => {
-          s.classList.toggle('hovered', parseInt(s.getAttribute('data-val')) <= val);
-        });
+        stars.forEach(s => s.classList.toggle('hovered', parseInt(s.getAttribute('data-val')) <= val));
       });
 
       star.addEventListener('mouseleave', () => {
@@ -206,25 +112,65 @@ document.addEventListener("DOMContentLoaded", function () {
       star.addEventListener('click', () => {
         const val = parseInt(star.getAttribute('data-val'));
         ratingInput.value = val;
-        stars.forEach(s => {
-          s.classList.toggle('active', parseInt(s.getAttribute('data-val')) <= val);
-        });
+        stars.forEach(s => s.classList.toggle('active', parseInt(s.getAttribute('data-val')) <= val));
       });
     });
   }
 
   /* ===============================
-     Review Form Submission
+     7️⃣ Enquiry Form Submission
+  =================================*/
+  const enquiryForm = document.getElementById("enquiryForm");
+  if (enquiryForm) {
+    enquiryForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const btn = enquiryForm.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = "Sending...";
+      btn.disabled = true;
+
+      const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        message: document.getElementById("message").value
+      };
+
+      try {
+        const response = await fetch("https://rsh-backend-production.up.railway.app/enquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          document.getElementById("enquirySuccessModal").style.display = "flex";
+          enquiryForm.reset();
+        } else {
+          alert("Submission failed. Please try again.");
+        }
+      } catch (error) {
+        console.error("Enquiry Error:", error);
+        alert("Server error. Please try again later.");
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+  }
+
+  /* ===============================
+     8️⃣ Review Form Submission
   =================================*/
   const reviewForm = document.getElementById('reviewForm');
   if (reviewForm) {
     reviewForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('reviewMsg');
+      const rating = parseInt(document.getElementById('reviewRating').value, 10);
       const name = document.getElementById('reviewName').value.trim();
       const role = document.getElementById('reviewRole').value.trim();
       const text = document.getElementById('reviewText').value.trim();
-      const rating = parseInt(document.getElementById('reviewRating').value, 10);
 
       if (rating === 0) {
         msg.style.color = '#EF4444';
@@ -232,25 +178,52 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
+      const btn = reviewForm.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = "Submitting...";
+      btn.disabled = true;
       msg.style.color = 'var(--text-muted)';
-      msg.textContent = 'Submitting…';
+      msg.textContent = 'Submitting...';
 
       try {
-        // Attempt to save to backend; falls back gracefully if offline
-        await fetch('https://rsh-backend-production.up.railway.app/review', {
+        const response = await fetch('https://rsh-backend-production.up.railway.app/review', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, role, text, rating })
         });
-      } catch (_) { /* no-op if backend absent */ }
 
-      msg.style.color = '#10B981';
-      msg.textContent = '✅ Thanks ' + name + '! Your review means the world to us.';
-      document.getElementById('reviewSuccessModal').style.display = 'flex';
-      reviewForm.reset();
-      stars.forEach(s => s.classList.remove('active', 'hovered'));
-      ratingInput.value = 0;
+        if (response.ok) {
+          document.getElementById('reviewSuccessModal').style.display = 'flex';
+          reviewForm.reset();
+          stars.forEach(s => s.classList.remove('active', 'hovered'));
+          if (ratingInput) ratingInput.value = 0;
+          msg.textContent = "";
+        } else {
+          msg.style.color = '#EF4444';
+          msg.textContent = 'Failed to submit. Try again.';
+        }
+      } catch (error) {
+        console.error("Review Error:", error);
+        msg.style.color = '#EF4444';
+        msg.textContent = 'Server error. Try again.';
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
     });
   }
+
+  /* ===============================
+     9️⃣ Modal Helpers
+  =================================*/
+  window.closeEnquiryModal = () => document.getElementById("enquirySuccessModal").style.display = "none";
+  window.closeReviewModal = () => document.getElementById("reviewSuccessModal").style.display = "none";
+
+  window.addEventListener('click', (e) => {
+    const enquiryModal = document.getElementById("enquirySuccessModal");
+    const reviewModal = document.getElementById("reviewSuccessModal");
+    if (e.target === enquiryModal) enquiryModal.style.display = "none";
+    if (e.target === reviewModal) reviewModal.style.display = "none";
+  });
 
 });
