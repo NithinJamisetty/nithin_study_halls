@@ -247,20 +247,36 @@ document.addEventListener("DOMContentLoaded", function () {
   let lastScrollTop = 0;
   const navbar = document.querySelector('.navbar');
   if (navbar) {
-    console.log("Navbar scroll listener attached");
-    window.addEventListener('scroll', () => {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    console.log("Navbar scroll listener attached - Debug Mode");
+    
+    const handleScroll = () => {
+      // Robust scroll sensing for different browsers and standalone mode
+      const scrollTop = Math.max(
+        window.pageYOffset, 
+        document.documentElement.scrollTop, 
+        document.body.scrollTop,
+        window.scrollY || 0
+      );
       
-      // Minimum scroll amount before hiding
-      if (Math.abs(lastScrollTop - scrollTop) <= 5) return;
+      const delta = scrollTop - lastScrollTop;
+      
+      // Minimum delta to avoid jitter
+      if (Math.abs(delta) <= 5) return;
 
-      if (scrollTop > lastScrollTop && scrollTop > 100) {
+      if (delta > 0 && scrollTop > 20) {
+        // Scrolling Down
         navbar.classList.add('navbar--hidden');
-      } else {
+      } else if (delta < 0) {
+        // Scrolling Up
         navbar.classList.remove('navbar--hidden');
       }
+      
       lastScrollTop = scrollTop;
-    }, { passive: true });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Aggressive sensing for mobile standalone
+    document.addEventListener('scroll', handleScroll, { passive: true });
   }
 
 });

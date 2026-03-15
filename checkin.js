@@ -325,16 +325,24 @@ function onScanFailure(error) {
   let lastScrollTop = 0;
   const navbar = document.querySelector('.navbar');
   if (navbar) {
-    console.log("Navbar scroll listener attached (Checkin)");
-    window.addEventListener('scroll', () => {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      if (Math.abs(lastScrollTop - scrollTop) <= 5) return;
+    console.log("Navbar scroll listener attached (Checkin) - Debug Mode");
+    const handleScroll = () => {
+      const scrollTop = Math.max(
+        window.pageYOffset, 
+        document.documentElement.scrollTop, 
+        document.body.scrollTop,
+        window.scrollY || 0
+      );
+      const delta = scrollTop - lastScrollTop;
+      if (Math.abs(delta) <= 5) return;
 
-      if (scrollTop > lastScrollTop && scrollTop > 100) {
+      if (delta > 0 && scrollTop > 20) {
         navbar.classList.add('navbar--hidden');
-      } else {
+      } else if (delta < 0) {
         navbar.classList.remove('navbar--hidden');
       }
       lastScrollTop = scrollTop;
-    }, { passive: true });
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('scroll', handleScroll, { passive: true });
   }

@@ -143,8 +143,11 @@ body {
   will-change: transform;
 }
 
-.navbar--hidden {
-  transform: translateY(-100%);
+header.navbar.navbar--hidden {
+  transform: translateY(-100%) !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .navbar .logo {

@@ -1135,3 +1135,10 @@ body {
 .admin-header {
   will-change: transform;
 }
+
+header.admin-header.admin-header--hidden {
+  transform: translateY(-100%) !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

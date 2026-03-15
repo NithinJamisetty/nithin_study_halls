@@ -895,16 +895,24 @@ setInterval(() => {
   // In admin, we use .admin-header instead of .navbar
   const navbar = document.querySelector('.admin-header');
   if (navbar) {
-    console.log("Navbar scroll listener attached (Admin)");
-    window.addEventListener('scroll', () => {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      if (Math.abs(lastScrollTop - scrollTop) <= 5) return;
+    console.log("Navbar scroll listener attached (Admin) - Debug Mode");
+    const handleScroll = () => {
+      const scrollTop = Math.max(
+        window.pageYOffset, 
+        document.documentElement.scrollTop, 
+        document.body.scrollTop,
+        window.scrollY || 0
+      );
+      const delta = scrollTop - lastScrollTop;
+      if (Math.abs(delta) <= 5) return;
 
-      if (scrollTop > lastScrollTop && scrollTop > 100) {
+      if (delta > 0 && scrollTop > 20) {
         navbar.classList.add('admin-header--hidden');
-      } else {
+      } else if (delta < 0) {
         navbar.classList.remove('admin-header--hidden');
       }
       lastScrollTop = scrollTop;
-    }, { passive: true });
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('scroll', handleScroll, { passive: true });
   }
