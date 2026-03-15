@@ -115,6 +115,15 @@
         <h2>Primary IDs</h2>
         <p>Manage generated Student IDs and send them securely via WhatsApp.</p>
       </div>
+
+      <div class="dash-home-card" onclick="openHomeSection('reviews')">
+        <div class="dash-card-img-wrapper">
+          <!-- Placeholder emoji since we don't have a specific image yet -->
+          <div style="font-size: 40px; text-align: center; line-height: 80px;">⭐</div>
+        </div>
+        <h2>Review Records</h2>
+        <p>Manage and delete reviews left by visitors and students on the frontpage.</p>
+      </div>
     </div>
 
     <!-- SEAT SECTION -->
@@ -203,6 +212,27 @@
             </tr>
           </thead>
           <tbody id="enquiryTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div id="reviewsSection" style="display:none;">
+      <button class="back-home-btn" onclick="showDashboardHome()">← Back to Dashboard</button>
+      <div class="section-wrapper">
+        <h2 style="color:var(--text); font-family:var(--font-heading); text-transform:uppercase;">Review Records</h2>
+        <table class="enquiry-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Rating</th>
+              <th>Message</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsTable"></tbody>
         </table>
       </div>
     </div>

@@ -450,6 +450,7 @@ window.showDashboardHome = function () {
   document.getElementById("dashboardHome").style.display = "flex";
   document.getElementById("seatSection").style.display = "none";
   document.getElementById("enquirySection").style.display = "none";
+  document.getElementById("reviewsSection").style.display = "none";
   document.getElementById("usersSection").style.display = "none";
   const idsSection = document.getElementById("idsSection");
   if (idsSection) idsSection.style.display = "none";
@@ -463,11 +464,13 @@ window.openHomeSection = function (section) {
 window.showSection = function (section) {
   const seatSection = document.getElementById("seatSection");
   const enquirySection = document.getElementById("enquirySection");
+  const reviewsSection = document.getElementById("reviewsSection");
   const usersSection = document.getElementById("usersSection");
   const idsSection = document.getElementById("idsSection");
 
   seatSection.style.display = "none";
   enquirySection.style.display = "none";
+  reviewsSection.style.display = "none";
   usersSection.style.display = "none";
   if (idsSection) idsSection.style.display = "none";
 
@@ -479,6 +482,9 @@ window.showSection = function (section) {
   } else if (section === "ids") {
     if (idsSection) idsSection.style.display = "block";
     loadIdsSection();
+  } else if (section === "reviews") {
+    reviewsSection.style.display = "block";
+    loadReviews();
   } else {
     enquirySection.style.display = "block";
     loadEnquiries();
@@ -818,6 +824,59 @@ window.markContacted = async function (id) {
     method: "PUT"
   });
   loadEnquiries();
+}
+
+async function loadReviews() {
+  try {
+    const response = await fetch("https://rsh-backend-production.up.railway.app/reviews");
+    const data = await response.json();
+
+    const table = document.getElementById("reviewsTable");
+    table.innerHTML = "";
+
+    data.reverse().forEach(item => {
+      let stars = "";
+      for (let i = 0; i < item.rating; i++) stars += "⭐";
+
+      const row = `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.role}</td>
+            <td>${stars}</td>
+            <td>${item.text}</td>
+            <td>${new Date(item.createdAt).toLocaleString()}</td>
+            <td>
+            <button onclick="deleteReview('${item._id}')" class="mark-btn" style="background: #e74c3c; border:none; padding:6px 14px; border-radius:6px; color:white; cursor:pointer;">
+              Delete
+            </button>
+            </td>
+          </tr>
+        `;
+      table.innerHTML += row;
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+window.deleteReview = async function (id) {
+  try {
+    const response = await fetch(
+      `https://rsh-backend-production.up.railway.app/review/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    const result = await response.json();
+    console.log(result);
+
+    loadReviews();
+
+  } catch (error) {
+    console.error("Delete review error:", error);
+  }
 }
 
 // Auto-refresh seat colors every minute to reflect real-time vacancies
