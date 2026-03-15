@@ -1951,7 +1951,7 @@ footer {
 }
 
 .dual-pane-card {
-  background: rgba(255, 255, 255, 0.8);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 243, 255, 0.9) 100%);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 34px;
@@ -1959,19 +1959,16 @@ footer {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  /* card is a flex column */
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .dual-pane-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 70px rgba(129, 140, 248, 0.1);
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(129, 140, 248, 0.3);
+  box-shadow: 0 40px 80px rgba(99, 102, 241, 0.15);
 }
 
-/* Purple tint on right (review) card */
-.dp-review-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 235, 255, 0.85) 100%);
-}
+/* Dual-pane cards are synced via .dual-pane-card base class */
 
 .dp-badge {
   display: inline-block;
@@ -2047,31 +2044,34 @@ footer {
 }
 
 .dp-submit {
-  padding: 15px 30px;
-  background: linear-gradient(135deg, var(--accent-primary), #7C3AED);
+  padding: 18px 32px;
+  background: linear-gradient(135deg, #6366f1, #8B5CF6);
   color: white;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   font-family: var(--font-main);
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   letter-spacing: 0.3px;
-  /* button is naturally at bottom — no margin-top:auto needed */
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
 }
 
 .dp-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(129, 140, 248, 0.35);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
 }
 
 .dp-submit-review {
-  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  background: linear-gradient(135deg, #8B5CF6, #D946EF);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2);
 }
 
 .dp-submit-review:hover {
-  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.35);
+  background: linear-gradient(135deg, #7C3AED, #C026D3);
+  box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
 }
 
 @media (max-width: 768px) {
