@@ -174,6 +174,15 @@ document.getElementById("btnRecover").addEventListener("click", async () => {
 
 // QR Code Scanner Logic
 let html5QrcodeScanner = null;
+let html5Qrcode = null;
+
+// Simple mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+if (isMobile) {
+    document.getElementById("startScanBtn").style.display = "none";
+    document.getElementById("uploadScanBtn").style.display = "flex";
+}
 
 document.getElementById("startScanBtn").addEventListener("click", () => {
     document.getElementById("startScanBtn").style.display = "none";
@@ -188,80 +197,122 @@ document.getElementById("startScanBtn").addEventListener("click", () => {
     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 });
 
+document.getElementById("uploadScanBtn").addEventListener("click", () => {
+    document.getElementById("qrFileInput").click();
+});
+
+document.getElementById("qrFileInput").addEventListener("change", (e) => {
+    if (e.target.files.length === 0) {
+        return;
+    }
+
+    const file = e.target.files[0];
+    const statusMsg = document.getElementById("statusMessage");
+    
+    statusMsg.style.color = "var(--text-main)";
+    statusMsg.innerText = "Scanning image...";
+
+    if (!html5Qrcode) {
+        html5Qrcode = new Html5Qrcode("reader");
+    }
+
+    html5Qrcode.scanFile(file, true)
+        .then(decodedText => {
+            statusMsg.innerText = "";
+            processScannedCode(decodedText);
+        })
+        .catch(err => {
+            console.error("Error scanning uploaded image:", err);
+            statusMsg.style.color = "#EF4444";
+            statusMsg.innerText = "Could not find a valid QR code in the image. Please try again.";
+        });
+    
+    // Clear the input value so the same file can be uploaded again if needed
+    e.target.value = "";
+});
+
 function onScanSuccess(decodedText, decodedResult) {
+    if (html5QrcodeScanner) {
+        // Stop scanning
+        html5QrcodeScanner.clear().then(() => {
+            document.getElementById("reader").style.display = "none";
+            processScannedCode(decodedText);
+        }).catch(error => {
+            console.error("Failed to clear scanner.", error);
+            processScannedCode(decodedText);
+        });
+    } else {
+        processScannedCode(decodedText);
+    }
+}
+
+async function processScannedCode(decodedText) {
     // Handle the scanned code
     document.getElementById("studentId").value = decodedText;
+    document.getElementById("reader").style.display = "none";
 
-    // Stop scanning
-    html5QrcodeScanner.clear().then(async () => {
-        document.getElementById("reader").style.display = "none";
+    const statusMsg = document.getElementById("statusMessage");
+    statusMsg.style.color = "var(--text-main)";
+    statusMsg.innerText = "Verifying shift timing...";
 
-        const statusMsg = document.getElementById("statusMessage");
-        statusMsg.style.color = "var(--text-main)";
-        statusMsg.innerText = "Verifying shift timing...";
+    try {
+        const q = query(collection(db, "users"), where("userId", "==", decodedText));
+        const querySnapshot = await getDocs(q);
 
-        try {
-            const q = query(collection(db, "users"), where("userId", "==", decodedText));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                statusMsg.style.color = "#EF4444";
-                statusMsg.innerText = "Student ID not found.";
-                document.getElementById("manualInputGroup").style.display = "block";
-                return;
-            }
-
-            let userData = null;
-            querySnapshot.forEach((docSnap) => {
-                userData = docSnap.data();
-            });
-
-            // --- PAYMENT CHECK ---
-            if (userData.isPaid !== true) {
-                statusMsg.style.color = "#EF4444";
-                statusMsg.innerText = `⚠️ Access Denied: Please pay your fees to the admin before checking in.`;
-                document.getElementById("manualInputGroup").style.display = "block";
-                return;
-            }
-            // --- END PAYMENT CHECK ---
-
-            if (userData.startTime && userData.endTime) {
-                const now = new Date();
-                const currentMins = (now.getHours() * 60) + now.getMinutes();
-
-                const parseTimeToMins = (timeStr) => {
-                    const parts = timeStr.split(':');
-                    if (parts.length !== 2) return 0;
-                    return (parseInt(parts[0], 10) * 60) + parseInt(parts[1], 10);
-                };
-
-                const startMins = parseTimeToMins(userData.startTime);
-                const endMins = parseTimeToMins(userData.endTime);
-
-                if (currentMins < (startMins - 15) || currentMins > (endMins + 15)) {
-                    statusMsg.style.color = "#EF4444";
-                    statusMsg.innerText = `Access Denied: Your registered shift is from ${userData.startTime} to ${userData.endTime}. You cannot check in or out at this time.`;
-                    document.getElementById("manualInputGroup").style.display = "block";
-                    return;
-                }
-            }
-
-            // Time is valid
-            document.getElementById("actionBtns").style.display = "flex";
-            document.getElementById("manualInputGroup").style.display = "block";
-            statusMsg.style.color = "#10B981";
-            statusMsg.innerText = `Verified ${userData.name || decodedText}. Please choose Check In or Check Out.`;
-
-        } catch (e) {
-            console.error("Verification error:", e);
+        if (querySnapshot.empty) {
             statusMsg.style.color = "#EF4444";
-            statusMsg.innerText = "Error verifying student ID.";
+            statusMsg.innerText = "Student ID not found.";
             document.getElementById("manualInputGroup").style.display = "block";
+            return;
         }
 
-    }).catch(error => {
-        console.error("Failed to clear scanner.", error);
-    });
+        let userData = null;
+        querySnapshot.forEach((docSnap) => {
+            userData = docSnap.data();
+        });
+
+        // --- PAYMENT CHECK ---
+        if (userData.isPaid !== true) {
+            statusMsg.style.color = "#EF4444";
+            statusMsg.innerText = `⚠️ Access Denied: Please pay your fees to the admin before checking in.`;
+            document.getElementById("manualInputGroup").style.display = "block";
+            return;
+        }
+        // --- END PAYMENT CHECK ---
+
+        if (userData.startTime && userData.endTime) {
+            const now = new Date();
+            const currentMins = (now.getHours() * 60) + now.getMinutes();
+
+            const parseTimeToMins = (timeStr) => {
+                const parts = timeStr.split(':');
+                if (parts.length !== 2) return 0;
+                return (parseInt(parts[0], 10) * 60) + parseInt(parts[1], 10);
+            };
+
+            const startMins = parseTimeToMins(userData.startTime);
+            const endMins = parseTimeToMins(userData.endTime);
+
+            if (currentMins < (startMins - 15) || currentMins > (endMins + 15)) {
+                statusMsg.style.color = "#EF4444";
+                statusMsg.innerText = `Access Denied: Your registered shift is from ${userData.startTime} to ${userData.endTime}. You cannot check in or out at this time.`;
+                document.getElementById("manualInputGroup").style.display = "block";
+                return;
+            }
+        }
+
+        // Time is valid
+        document.getElementById("actionBtns").style.display = "flex";
+        document.getElementById("manualInputGroup").style.display = "block";
+        statusMsg.style.color = "#10B981";
+        statusMsg.innerText = `Verified ${userData.name || decodedText}. Please choose Check In or Check Out.`;
+
+    } catch (e) {
+        console.error("Verification error:", e);
+        statusMsg.style.color = "#EF4444";
+        statusMsg.innerText = "Error verifying student ID.";
+        document.getElementById("manualInputGroup").style.display = "block";
+    }
 }
 
 function onScanFailure(error) {
