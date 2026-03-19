@@ -53,7 +53,7 @@ window.login = function () {
 
     // Step 2: Check OTP
     if (!otpInput) {
-      alert("Please enter the 6-digit code from your Authenticator app.");
+      showError("Input Required", "Please enter the 6-digit code from your Authenticator app.");
       return;
     }
 
@@ -78,16 +78,22 @@ window.login = function () {
         document.getElementById("adminPanel").style.display = "block";
         loadSeats();
       } else {
-        alert("Invalid or expired code. Please check your Authenticator app.");
+        showError("Invalid OTP", "Invalid or expired code. Please check your Authenticator app.");
       }
     } catch (err) {
       console.error("TOTP Error:", err);
-      alert("Error verifying code.");
+      showError("Connection Error", "There was an issue verifying your code. Please try again.");
     }
 
   } else {
-    document.getElementById("loginErrorModal").style.display = "flex";
+    showError("Invalid Login", "The username or password you entered is incorrect. Please check your credentials and try again.");
   }
+};
+
+window.showError = function (title, message) {
+  document.getElementById('errorTitle').innerText = title;
+  document.getElementById('errorMessage').innerText = message;
+  document.getElementById('loginErrorModal').style.display = 'flex';
 };
 
 window.closeLoginErrorModal = function () {
