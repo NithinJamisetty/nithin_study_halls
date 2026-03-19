@@ -31,14 +31,60 @@ let selectedSeat = null;
 let selectedSeatId = null;
 
 window.login = function () {
-  if (
-    document.getElementById("username").value === "admin" &&
-    document.getElementById("password").value === "adminbreach"
-  ) {
-    sessionStorage.setItem("isAdminLoggedIn", "true");
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    loadSeats();
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const otpInput = document.getElementById("otp").value;
+  const loginBtn = document.getElementById("loginBtn");
+  const otpGroup = document.getElementById("otpGroup");
+  const passGroup = document.getElementById("passGroup");
+
+  // Step 1: Check Password
+  if (user === "admin" && pass === "adminbreach") {
+    
+    // Check if we already showed the OTP field
+    if (otpGroup.style.display === "none") {
+      // Transition to OTP step
+      passGroup.style.display = "none";
+      otpGroup.style.display = "block";
+      loginBtn.innerText = "Verify Authenticator Code";
+      document.getElementById("otp").focus();
+      return;
+    }
+
+    // Step 2: Check OTP
+    if (!otpInput) {
+      alert("Please enter the 6-digit code from your Authenticator app.");
+      return;
+    }
+
+    try {
+      // The secret key for the admin to add to their Google Authenticator app:
+      // KVKFMV2KNRRHK5L5
+      let totp = new window.OTPAuth.TOTP({
+        issuer: "NithinHalls",
+        label: user,
+        algorithm: "SHA1",
+        digits: 6,
+        period: 30,
+        secret: "KVKFMV2KNRRHK5L5" 
+      });
+
+      let delta = totp.validate({ token: otpInput, window: 1 });
+
+      if (delta !== null) {
+        // Success!
+        sessionStorage.setItem("isAdminLoggedIn", "true");
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadSeats();
+      } else {
+        alert("Invalid or expired code. Please check your Authenticator app.");
+      }
+    } catch (err) {
+      console.error("TOTP Error:", err);
+      alert("Error verifying code.");
+    }
+
   } else {
     document.getElementById("loginErrorModal").style.display = "flex";
   }
@@ -52,6 +98,14 @@ window.logout = function () {
   sessionStorage.removeItem("isAdminLoggedIn");
   document.getElementById("adminPanel").style.display = "none";
   document.getElementById("loginPage").style.display = "flex";
+  
+  // Reset UI for next login
+  if (document.getElementById("passGroup")) {
+    document.getElementById("passGroup").style.display = "block";
+    document.getElementById("otpGroup").style.display = "none";
+    document.getElementById("loginBtn").innerText = "Sign in to Dashboard";
+    document.getElementById("otp").value = "";
+  }
 };
 
 let allSeatsData = {};

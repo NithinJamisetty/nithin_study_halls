@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Nithin Halls">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script src="https://cdn.jsdelivr.net/npm/otpauth@9.1.2/dist/otpauth.umd.min.js"></script>
 </head>
 
 <body>
@@ -45,11 +46,15 @@
             <label for="username">Username</label>
             <input type="text" id="username" placeholder="Enter your username">
           </div>
-          <div class="split-input-group">
+          <div class="split-input-group" id="passGroup">
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="••••••••">
           </div>
-          <button onclick="login()" class="split-btn">Sign in to Dashboard</button>
+          <div class="split-input-group" id="otpGroup" style="display: none;">
+            <label for="otp">Authenticator Code (OTP)</label>
+            <input type="text" id="otp" placeholder="Enter 6-digit code" maxlength="6" style="letter-spacing: 4px; font-weight: bold; text-align: center;">
+          </div>
+          <button id="loginBtn" onclick="login()" class="split-btn">Sign in to Dashboard</button>
         </div>
 
         <div class="split-footer">
